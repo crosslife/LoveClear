@@ -10,6 +10,7 @@ USING_NS_CC;
 
 AppDelegate::AppDelegate()
 {
+
 }
 
 AppDelegate::~AppDelegate()
@@ -23,6 +24,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     Director *director = Director::getInstance();
     director->setOpenGLView(EGLView::getInstance());
 
+
     // turn on display FPS
     director->setDisplayStats(true);
 
@@ -33,8 +35,8 @@ bool AppDelegate::applicationDidFinishLaunching()
     LuaEngine* engine = LuaEngine::getInstance();
     ScriptEngineManager::getInstance()->setScriptEngine(engine);
     
-    std::string path = FileUtils::getInstance()->fullPathForFilename("hello.lua");
-    engine->executeScriptFile(path.c_str());
+    std::string path = FileUtils::getInstance()->fullPathForFilename("script/hello.lua");
+    //engine->executeScriptFile(path.c_str());
 
     return true;
 }
