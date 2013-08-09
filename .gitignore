@@ -1,3 +1,5 @@
 proj.win32/MyGitGame.opensdf
 proj.win32/MyGitGame.sdf
 proj.win32/Debug.win32/
+proj.android/obj/
+proj.android/assets/
