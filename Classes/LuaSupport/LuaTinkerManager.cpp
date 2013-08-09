@@ -19,9 +19,7 @@ bool LuaTinkerManager::checkAnyLoadFile(string filePath)
 	{
 		std::string path = FileUtils::getInstance()->fullPathForFilename(filePath.c_str());
 
-		unsigned long fileSize = 0;
-		unsigned char* buffer = CCFileUtils::sharedFileUtils()->getFileData(path.c_str(), "rt", &fileSize);
-		int ret = luaL_dostring(this->curLuaState, (char*)buffer, fileSize);
+		int ret = luaL_dofile(this->curLuaState, path.c_str());
 
 		if (ret != 0) {
 			CCLOG("load %s file error: %s", filePath.c_str(), lua_tostring(this->curLuaState, -1));

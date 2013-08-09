@@ -4,3 +4,4 @@ proj.win32/Debug.win32/
 proj.android/obj/
 proj.android/assets/
 proj.android/libs/armeabi/libcocos2dlua.so
+proj.win32/LuaResource/Debug/LuaResource.lastbuildstate

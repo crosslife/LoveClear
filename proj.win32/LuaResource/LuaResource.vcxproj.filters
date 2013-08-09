@@ -8,13 +8,19 @@
     <None Include="..\..\Resources\DrawPrimitives.lua" />
     <None Include="..\..\Resources\Opengl.lua" />
     <None Include="..\..\Resources\OpenglConstants.lua" />
-    <None Include="..\..\Resources\scripts\hello.lua">
-      <Filter>scripts</Filter>
+    <None Include="..\..\Resources\Script\hello.lua">
+      <Filter>Script</Filter>
+    </None>
+    <None Include="..\..\Resources\Script\Config\DebugConfig.lua">
+      <Filter>Script\Config</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="scripts">
-      <UniqueIdentifier>{e23cec80-ee02-4646-8d14-706dd6959649}</UniqueIdentifier>
+    <Filter Include="Script">
+      <UniqueIdentifier>{73a6b974-c04a-487a-8f30-3a2b6128fbe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Config">
+      <UniqueIdentifier>{2eed098a-e5a8-44a5-97b8-cb2e12ee238e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include "AppDelegate.h"
 #include "CCLuaEngine.h"
 #include "SimpleAudioEngine.h"
+#include "LuaTinkerManager.h"
 
 using namespace CocosDenshion;
 
@@ -35,8 +36,14 @@ bool AppDelegate::applicationDidFinishLaunching()
     LuaEngine* engine = LuaEngine::getInstance();
     ScriptEngineManager::getInstance()->setScriptEngine(engine);
     
-    std::string path = FileUtils::getInstance()->fullPathForFilename("scripts/hello.lua");
+    std::string path = FileUtils::getInstance()->fullPathForFilename("Script/hello.lua");
     engine->executeScriptFile(path.c_str());
+
+	bool ret = LuaTinkerManager::Get()->callLuaFunc<bool>("Script/Config/DebugConfig.lua", "TestFunc");
+	if (ret)
+	{
+		CCLOG("Lua Func Test Success!!");
+	}
 
     return true;
 }
