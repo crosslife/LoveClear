@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\Resources\AudioEngine.lua" />
+    <None Include="..\..\Resources\CCBReaderLoad.lua" />
+    <None Include="..\..\Resources\Cocos2dConstants.lua" />
+    <None Include="..\..\Resources\Deprecated.lua" />
+    <None Include="..\..\Resources\DrawPrimitives.lua" />
+    <None Include="..\..\Resources\Opengl.lua" />
+    <None Include="..\..\Resources\OpenglConstants.lua" />
+    <None Include="..\..\Resources\scripts\hello.lua">
+      <Filter>scripts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{e23cec80-ee02-4646-8d14-706dd6959649}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

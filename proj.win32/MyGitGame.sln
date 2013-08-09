@@ -36,6 +36,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liblua", "..\..\..\scriptin
 		{F8EDD7FA-9A51-4E80-BAEB-860825D2EAC6} = {F8EDD7FA-9A51-4E80-BAEB-860825D2EAC6}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaResource", "LuaResource\LuaResource.vcxproj", "{3F560AD3-7DCE-493E-ABF9-75F6B3095E48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -70,6 +72,10 @@ Global
 		{DDC3E27F-004D-4DD4-9DD3-931A013D2159}.Debug|Win32.Build.0 = Debug|Win32
 		{DDC3E27F-004D-4DD4-9DD3-931A013D2159}.Release|Win32.ActiveCfg = Release|Win32
 		{DDC3E27F-004D-4DD4-9DD3-931A013D2159}.Release|Win32.Build.0 = Release|Win32
+		{3F560AD3-7DCE-493E-ABF9-75F6B3095E48}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3F560AD3-7DCE-493E-ABF9-75F6B3095E48}.Debug|Win32.Build.0 = Debug|Win32
+		{3F560AD3-7DCE-493E-ABF9-75F6B3095E48}.Release|Win32.ActiveCfg = Release|Win32
+		{3F560AD3-7DCE-493E-ABF9-75F6B3095E48}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

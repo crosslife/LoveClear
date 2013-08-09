@@ -2,6 +2,9 @@
 #include "AppDelegate.h"
 #include "cocos2d.h"
 
+#define WINDOW_WIDHT      1136
+#define WINDOW_HEIGHT     640
+
 USING_NS_CC;
 
 // uncomment below line, open debug console
@@ -26,7 +29,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     AppDelegate app;
     EGLView* eglView = EGLView::getInstance();
     eglView->setViewName("MyGitGame");
-    eglView->setFrameSize(480, 320);
+    eglView->setFrameSize(WINDOW_WIDHT, WINDOW_HEIGHT);
 
     int ret = Application::getInstance()->run();
 
