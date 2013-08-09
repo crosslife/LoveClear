@@ -1,12 +1,3 @@
-require "AudioEngine" 
-
-function GetFrameSizeX()
-	return 1024
-end
-
-function GetFrameSizeY()
-	return 768
-end
 
 -- for CCLuaEngine traceback
 function __G__TRACKBACK__(msg)
@@ -25,25 +16,13 @@ local function main()
         print(string.format(...))
     end
 
-    ---------------
-	--CCEGLView:getInstance():setFrameSize(1024, 768)
-
-    local visibleSize = CCDirector:getInstance():getVisibleSize()
-	cclog("visibleSize: "..visibleSize.width.." "..visibleSize.height)
-	
+    local visibleSize = CCDirector:getInstance():getVisibleSize()	
     local origin = CCDirector:getInstance():getVisibleOrigin()
-	cclog("origin: "..origin.x.." "..origin.y)
-	
 
     -- create farm
     local function createLayerFarm()
         local layerFarm = CCLayer:create()
 
-        -- add in farm background
-        --local bg = CCSprite:create("imgs/farm.jpg")
-        --bg:setPosition(origin.x + visibleSize.width / 2 + 80, origin.y + visibleSize.height / 2)
-        --layerFarm:addChild(bg)
-		
 		--add badland 
 		local bandlandSprite = CCSprite:create("imgs/badland.jpg")
         bandlandSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
@@ -79,8 +58,11 @@ local function main()
                 return onTouchBegan(x, y)
             elseif eventType == "moved" then
                 return onTouchMoved(x, y)
-            else
+            elseif eventType == "ended" then
                 return onTouchEnded(x, y)
+			else
+				cclog(eventType)
+				return onTouchEnded(x, y)
             end
         end
 
