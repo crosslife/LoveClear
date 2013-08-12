@@ -22,10 +22,7 @@
     <None Include="..\..\Resources\Script\main.lua" />
     <None Include="..\..\Resources\Script\Scene\GameScene.lua" />
     <None Include="..\..\Resources\Script\Scene\MainMenuScene.lua" />
-<<<<<<< HEAD
     <None Include="..\..\Resources\Script\Scene\SplashScene.lua" />
-=======
->>>>>>> 6b7426e8b6ab17eccd738ec001af65f2fa04f106
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3F560AD3-7DCE-493E-ABF9-75F6B3095E48}</ProjectGuid>

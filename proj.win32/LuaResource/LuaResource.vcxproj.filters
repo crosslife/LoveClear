@@ -20,12 +20,9 @@
     <None Include="..\..\Resources\Script\Scene\GameScene.lua">
       <Filter>Script\Scene</Filter>
     </None>
-<<<<<<< HEAD
     <None Include="..\..\Resources\Script\Scene\SplashScene.lua">
       <Filter>Script\Scene</Filter>
     </None>
-=======
->>>>>>> 6b7426e8b6ab17eccd738ec001af65f2fa04f106
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Script">
