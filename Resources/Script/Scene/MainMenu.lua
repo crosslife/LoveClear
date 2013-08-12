@@ -1,8 +1,8 @@
 local visibleSize = CCDirector:getInstance():getVisibleSize()	
 local origin = CCDirector:getInstance():getVisibleOrigin()
 
--- create farm
-local function createMenu()
+-- create main menu
+function CreateMenu()
     local layerFarm = CCLayer:create()
 
 	--add badland 
@@ -14,24 +14,20 @@ local function createMenu()
     local touchBeginPoint = nil
 
     local function onTouchBegan(x, y)
-        --cclog("onTouchBegan: %0.2f, %0.2f", x, y)
         touchBeginPoint = {x = x, y = y}
         -- CCTOUCHBEGAN event must return true
         return true
     end
 
     local function onTouchMoved(x, y)
-        --cclog("onTouchMoved: %0.2f, %0.2f", x, y)
         if touchBeginPoint then
             local cx, cy = layerFarm:getPosition()
-            layerFarm:setPosition(cx + x - touchBeginPoint.x,
-                                    cy + y - touchBeginPoint.y)
+            layerFarm:setPosition(cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y)
             touchBeginPoint = {x = x, y = y}
         end
     end
 
     local function onTouchEnded(x, y)
-        --cclog("onTouchEnded: %0.2f, %0.2f", x, y)
         touchBeginPoint = nil
     end
 
@@ -43,7 +39,6 @@ local function createMenu()
         elseif eventType == "ended" then
             return onTouchEnded(x, y)
 		else
-			cclog(eventType)
 			return onTouchEnded(x, y)
         end
     end

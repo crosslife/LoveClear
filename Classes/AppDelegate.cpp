@@ -36,7 +36,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     LuaEngine* engine = LuaEngine::getInstance();
     ScriptEngineManager::getInstance()->setScriptEngine(engine);
     
-    std::string path = FileUtils::getInstance()->fullPathForFilename("Script/hello.lua");
+    std::string path = FileUtils::getInstance()->fullPathForFilename("Script/main.lua");
     engine->executeScriptFile(path.c_str());
 
 	bool ret = LuaTinkerManager::Get()->callLuaFunc<bool>("Script/Config/DebugConfig.lua", "TestFunc");
