@@ -2,8 +2,8 @@
 #include "AppDelegate.h"
 #include "cocos2d.h"
 
-#define WINDOW_WIDHT      640
-#define WINDOW_HEIGHT     960
+#define WINDOW_WIDHT      320
+#define WINDOW_HEIGHT     480
 
 USING_NS_CC;
 

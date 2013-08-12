@@ -1,14 +1,15 @@
+
+
 local visibleSize = CCDirector:getInstance():getVisibleSize()	
 local origin = CCDirector:getInstance():getVisibleOrigin()
 
--- create main menu
-function CreateMenu()
-    local layerFarm = CCLayer:create()
+local function createBackLayer()
+	local backLayer = CCLayer:create()
 
-	--add badland 
+	--add background
 	local bandlandSprite = CCSprite:create("imgs/badland.jpg")
     bandlandSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
-    layerFarm:addChild(bandlandSprite)
+    backLayer:addChild(bandlandSprite)
 
     -- handing touch events
     local touchBeginPoint = nil
@@ -21,8 +22,8 @@ function CreateMenu()
 
     local function onTouchMoved(x, y)
         if touchBeginPoint then
-            local cx, cy = layerFarm:getPosition()
-            layerFarm:setPosition(cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y)
+            local cx, cy = backLayer:getPosition()
+            backLayer:setPosition(cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y)
             touchBeginPoint = {x = x, y = y}
         end
     end
@@ -43,8 +44,17 @@ function CreateMenu()
         end
     end
 
-    layerFarm:registerScriptTouchHandler(onTouch)
-    layerFarm:setTouchEnabled(true)
+    backLayer:registerScriptTouchHandler(onTouch)
+    backLayer:setTouchEnabled(true)
 
-    return layerFarm
+	return backLayer
+end
+
+-- create main menu
+function CreateMenuScene()
+   
+	local scene = CCScene:create()
+	scene:addChild(createBackLayer())
+
+    return scene
 end

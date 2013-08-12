@@ -14,7 +14,10 @@
     <None Include="..\..\Resources\Script\main.lua">
       <Filter>Script</Filter>
     </None>
-    <None Include="..\..\Resources\Script\Scene\MainMenu.lua">
+    <None Include="..\..\Resources\Script\Scene\MainMenuScene.lua">
+      <Filter>Script\Scene</Filter>
+    </None>
+    <None Include="..\..\Resources\Script\Scene\GameScene.lua">
       <Filter>Script\Scene</Filter>
     </None>
   </ItemGroup>

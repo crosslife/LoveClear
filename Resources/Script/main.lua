@@ -3,11 +3,9 @@
 collectgarbage("setpause", 100) 
 collectgarbage("setstepmul", 5000)
 	
-require "Script/Scene/MainMenu"
+require "Script/Scene/MainMenuScene"
 ----------------
 
 
 -- run
-local scene = CCScene:create()
-scene:addChild(CreateMenu())
-CCDirector:getInstance():runWithScene(scene)
+CCDirector:getInstance():runWithScene(CreateMenuScene())
