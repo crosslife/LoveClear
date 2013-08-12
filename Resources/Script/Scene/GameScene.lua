@@ -16,6 +16,9 @@ local function createBackLayer()
 
     local menuSprite = CCSprite:createWithSpriteFrame(menuFrame)
 	menuSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+
+	--set scale
+	menuSprite:setScaleX(visibleSize.width/frameWidth)
 	backLayer:addChild(menuSprite)
 
     local function onTouchBegan(x, y)

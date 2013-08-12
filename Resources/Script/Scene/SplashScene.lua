@@ -1,4 +1,5 @@
 require("Script/Scene/MainMenuScene")
+require "AudioEngine" 
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()	
 local origin = CCDirector:getInstance():getVisibleOrigin()
@@ -17,7 +18,28 @@ local function createBackLayer()
 
     local splashSprite = CCSprite:createWithSpriteFrame(splashFrame)
 	splashSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+
+	--set scale
+	splashSprite:setScaleX(visibleSize.width/frameWidth)
+
 	backLayer:addChild(splashSprite)
+
+	--add text info
+	local testLabel = CCLabelTTF:create("Press Screen", "Arial", 30)
+	local arrayOfActions = CCArray:create()			
+	local scale1 = CCScaleTo:create(1.5, 1.2)
+	local scale2 = CCScaleTo:create(1.5, 1)			
+
+	arrayOfActions:addObject(scale1)
+	arrayOfActions:addObject(scale2)
+
+	local sequence = CCSequence:create(arrayOfActions)
+
+	local repeatFunc = CCRepeatForever:create(sequence)
+	testLabel:runAction(repeatFunc)
+
+	testLabel:setPosition(ccp(visibleSize.width / 2, 130))
+	backLayer:addChild(testLabel)
 
     -- handing touch events
     local touchBeginPoint = nil
@@ -47,6 +69,9 @@ function CreateSplashScene()
    
 	local scene = CCScene:create()
 	scene:addChild(createBackLayer())
+
+	local bgMusicPath = CCFileUtils:getInstance():fullPathForFilename("Sound/login.wav")
+    AudioEngine.playMusic(bgMusicPath, true)
 
     return scene
 end
