@@ -19,7 +19,8 @@
     <None Include="..\..\Resources\Opengl.lua" />
     <None Include="..\..\Resources\OpenglConstants.lua" />
     <None Include="..\..\Resources\Script\Config\DebugConfig.lua" />
-    <None Include="..\..\Resources\Script\hello.lua" />
+    <None Include="..\..\Resources\Script\main.lua" />
+    <None Include="..\..\Resources\Script\Scene\MainMenu.lua" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3F560AD3-7DCE-493E-ABF9-75F6B3095E48}</ProjectGuid>
