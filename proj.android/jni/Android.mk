@@ -7,10 +7,14 @@ LOCAL_MODULE := cocos2dlua_shared
 LOCAL_MODULE_FILENAME := libcocos2dlua
 
 LOCAL_SRC_FILES := hellolua/main.cpp \
-                   ../../Classes/AppDelegate.cpp
+                   ../../Classes/AppDelegate.cpp \
+				   ../../Classes/LuaSupport/LuaTinkerManager.cpp \
+				   ../../Classes/LuaSupport/lua_tinker.cpp
 
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes \
+					$(LOCAL_PATH)/../../Classes/GameManager \
+					$(LOCAL_PATH)/../../Classes/LuaSupport \
 
 LOCAL_STATIC_LIBRARIES := curl_static_prebuilt
 
