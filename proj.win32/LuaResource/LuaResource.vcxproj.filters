@@ -23,6 +23,12 @@
     <None Include="..\..\Resources\Script\Scene\SplashScene.lua">
       <Filter>Script\Scene</Filter>
     </None>
+    <None Include="..\..\Resources\Script\Sprite\GameIcon.lua">
+      <Filter>Script\Sprite</Filter>
+    </None>
+    <None Include="..\..\Resources\Script\Config\CommonDefine.lua">
+      <Filter>Script\Config</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Script">
@@ -33,6 +39,9 @@
     </Filter>
     <Filter Include="Script\Scene">
       <UniqueIdentifier>{e88e2eee-0e00-45a6-abe0-df3ee1bf9f79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Sprite">
+      <UniqueIdentifier>{aadc28ec-a085-4b92-a5eb-401c37b26df5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -2,25 +2,21 @@ require("Script/Scene/MainMenuScene")
 require "AudioEngine" 
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()	
-local origin = CCDirector:getInstance():getVisibleOrigin()
 
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
-	local frameWidth = 712
-    local frameHeight = 1024
-
 	local textureSplash = CCTextureCache:getInstance():addImage("imgs/splash_bg.png")
 
-
-	rect = CCRect(0, 0, frameWidth, frameHeight)
+	local visibleSize = CCDirector:getInstance():getVisibleSize()	
+	rect = CCRect(0, 0, visibleSize.width, visibleSize.height)
     local splashFrame = CCSpriteFrame:createWithTexture(textureSplash, rect)
 
     local splashSprite = CCSprite:createWithSpriteFrame(splashFrame)
 	splashSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
 
 	--set scale
-	splashSprite:setScaleX(visibleSize.width/frameWidth)
+	--splashSprite:setScaleX(visibleSize.width/frameWidth)
 
 	backLayer:addChild(splashSprite)
 

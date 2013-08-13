@@ -27,59 +27,34 @@ public:
 	template<typename RVal>
 	RVal callLuaFunc(const char* filePath, const char* funcName)
 	{
-		RVal ret;
-		if (false == this->checkAnyLoadFile(filePath))
-			return ret;
 
-		ret = lua_tinker::call<RVal>(this->curLuaState, funcName);
-		return ret;
+		CCASSERT(this->checkAnyLoadFile(filePath), "load lua file failed");
+
+		return lua_tinker::call<RVal>(this->curLuaState, funcName);
 	}
 
 	template<typename RVal, typename T1>
 	RVal callLuaFunc(const char* filePath, const char* funcName, T1 arg)
 	{
-		RVal ret;
-		if (false == this->checkAnyLoadFile(filePath))
-			return ret;
+		CCASSERT(this->checkAnyLoadFile(filePath), "load lua file failed");
 
-		ret = lua_tinker::call<RVal>(this->curLuaState, funcName, arg);
-		return ret;
+		return lua_tinker::call<RVal>(this->curLuaState, funcName, arg);
 	}
 
 	template<typename RVal, typename T1, typename T2>
 	RVal callLuaFunc(const char* filePath, const char* funcName, T1 arg1, T2 arg2)
 	{
-		RVal ret;
-		if (false == this->checkAnyLoadFile(filePath))
-			return ret;
+		CCASSERT(this->checkAnyLoadFile(filePath), "load lua file failed");
 
-		ret = lua_tinker::call<RVal>(this->curLuaState, funcName, arg1, arg2);
-		return ret;
+		return lua_tinker::call<RVal>(this->curLuaState, funcName, arg1, arg2);
 	}
 
 	template<typename RVal, typename T1, typename T2, typename T3>
 	RVal callLuaFunc(const char* filePath, const char* funcName, T1 arg1, T2 arg2, T3 arg3)
 	{
-		RVal ret;
-		if (false == this->checkAnyLoadFile(filePath))
-			return ret;
+		CCASSERT(this->checkAnyLoadFile(filePath), "load lua file failed");
 
-		ret = lua_tinker::call<RVal>(this->curLuaState, funcName, arg1, arg2, arg3);
-		return ret;
-	}
-
-	//∂¡»°≈‰÷√
-	template<typename RVal, typename T1, typename T2>
-	RVal getLuaConfig(string configFileName, const char * tableName, T1 idName, T2 typeName)
-	{
-		RVal ret;
-		if (false == this->checkAnyLoadFile("scripts/GameConfig/" + configFileName + ".lua"))
-			return ret;
-
-		lua_tinker::table gTable = lua_tinker::get<lua_tinker::table>(this->curLuaState, tableName);
-		lua_tinker::table inTable = gTable.get<lua_tinker::table>(idName);
-		ret = inTable.get<RVal>(typeName);
-		return ret;
+		return lua_tinker::call<RVal>(this->curLuaState, funcName, arg1, arg2, arg3);
 	}
 
 	bool checkAnyLoadFile(string filePath);

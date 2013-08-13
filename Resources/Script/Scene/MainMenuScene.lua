@@ -1,24 +1,20 @@
 require("Script/Scene/GameScene")
 
-local visibleSize = CCDirector:getInstance():getVisibleSize()	
-local origin = CCDirector:getInstance():getVisibleOrigin()
+
 
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
-	local frameWidth = 712
-    local frameHeight = 1024
-
 	local textureMenu = CCTextureCache:getInstance():addImage("imgs/menu_bg.png")
+	local visibleSize = CCDirector:getInstance():getVisibleSize()	
 
-
-	rect = CCRect(0, 0, frameWidth, frameHeight)
+	rect = CCRect(0, 0, visibleSize.width, visibleSize.height)
     local menuFrame = CCSpriteFrame:createWithTexture(textureMenu, rect)
 
     local menuSprite = CCSprite:createWithSpriteFrame(menuFrame)
 	menuSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
 	--set scale
-	menuSprite:setScaleX(visibleSize.width/frameWidth)
+	--menuSprite:setScaleX(visibleSize.width/frameWidth)
 
 	backLayer:addChild(menuSprite)
 
