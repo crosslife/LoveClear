@@ -92,7 +92,7 @@ function CreateGameScene()
 			local iconSprite = getGameIconSprite(cellY, cellX)
 			local cell = {x = cellX, y = cellY}
 			local cellPoint = getCellCenterPoint(cell)
-			iconSprite:setPosition(ccp(cellPoint.x, cellPoint.y))
+			iconSprite:setPosition(CCPoint(cellPoint.x, cellPoint.y))
 			scene:addChild(iconSprite)
 		end
 	end

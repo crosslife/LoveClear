@@ -3,12 +3,32 @@ require "AudioEngine"
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()	
 
+local function createEyeSprite()
+	local eyeSprite = CCSprite:create("imgs/eye.png")
+
+	local arrayOfActions = CCArray:create()			
+	local scale1 = CCScaleTo:create(0.1, 1, 0.2)
+	local scale2 = CCScaleTo:create(0.1, 1, 1)	
+	local delay = CCDelayTime:create(2)		
+
+	arrayOfActions:addObject(scale1)
+	arrayOfActions:addObject(scale2)
+	arrayOfActions:addObject(delay)
+
+	local sequence = CCSequence:create(arrayOfActions)
+
+	local repeatFunc = CCRepeatForever:create(sequence)
+	eyeSprite:runAction(repeatFunc)
+
+	return eyeSprite
+end
+
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
 	local textureSplash = CCTextureCache:getInstance():addImage("imgs/splash_bg.png")
 
-	local visibleSize = CCDirector:getInstance():getVisibleSize()	
+	
 	rect = CCRect(0, 0, visibleSize.width, visibleSize.height)
     local splashFrame = CCSpriteFrame:createWithTexture(textureSplash, rect)
 
@@ -34,7 +54,7 @@ local function createBackLayer()
 	local repeatFunc = CCRepeatForever:create(sequence)
 	testLabel:runAction(repeatFunc)
 
-	testLabel:setPosition(ccp(visibleSize.width / 2, 130))
+	testLabel:setPosition(CCPoint(visibleSize.width / 2, 130))
 	backLayer:addChild(testLabel)
 
     -- handing touch events
@@ -68,6 +88,15 @@ function CreateSplashScene()
 
 	local bgMusicPath = CCFileUtils:getInstance():fullPathForFilename("Sound/login.wav")
     AudioEngine.playMusic(bgMusicPath, true)
+
+	local eyeSprite1 = createEyeSprite()
+	eyeSprite1:setPosition(CCPoint(visibleSize.width / 2 - 50, visibleSize.height / 2 + 180))
+
+	local eyeSprite2 = createEyeSprite()
+	eyeSprite2:setPosition(CCPoint(visibleSize.width / 2 + 50, visibleSize.height / 2 + 180))
+
+	scene:addChild(eyeSprite1)
+	scene:addChild(eyeSprite2)
 
     return scene
 end
