@@ -1,5 +1,18 @@
 require "Script/Config/CommonDefine"
 
+local GameBoard = {}
+GameBoard[1] = {}
+GameBoard[2] = {}
+GameBoard[3] = {}
+GameBoard[4] = {}
+GameBoard[5] = {}
+GameBoard[6] = {}
+GameBoard[7] = {}
+
+local scene = nil
+
+local curSelectTag = nil
+
 local function touchPointToCell(x, y)
 	local cellX = math.modf((x - GLeftBottomOffsetX) / GCellWidth)
 	local cellY = math.modf((y - GLeftBottomOffsetY) / GCellWidth)
@@ -36,6 +49,53 @@ local function getGameIconSprite(type, index)
 	return iconSprite
 end
 
+
+
+
+local function initGameBoard()
+	for	x = 1, 7 do
+		for y = 1, 7 do
+			math.randomseed(math.random(os.time()))
+			GameBoard[x][y] = math.random(7)
+		end
+	end
+
+	local function onClickGameIcon(tag)
+		cclog("click..."..tag)
+		if curSelectTag ~= nil then
+			cclog("unselected.."..curSelectTag)
+			scene:getChildByTag(curSelectTag):getChildByTag(curSelectTag):unselected()
+		end
+
+		curSelectTag = tag
+		scene:getChildByTag(curSelectTag):getChildByTag(curSelectTag):selected()
+
+		AudioEngine.playEffect("Sound/A_select.wav")
+	end
+
+	for x=1, 7 do
+		for y = 1, 7 do
+			local iconNormalSprite = getGameIconSprite(1, GameBoard[x][y])
+			local iconSelectSprite = getGameIconSprite(4, GameBoard[x][y])
+			iconSelectSprite:setPosition(-6, -6)
+
+			local iconMenuSprite = CCMenuItemSprite:create(iconNormalSprite, iconSelectSprite)
+			--iconMenuSprite:setTag(100)
+			iconMenuSprite:registerScriptTapHandler(onClickGameIcon)
+
+			local iconMenu = CCMenu:create()
+			iconMenu:addChild(iconMenuSprite, 10, 10 * x + y)
+			 
+			local cell = {x = x, y = y}
+			local cellPoint = getCellCenterPoint(cell)
+			iconMenu:setPosition(CCPoint(cellPoint.x, cellPoint.y))
+			iconMenu:setTag(10 * x + y)
+
+			scene:addChild(iconMenu)
+		end
+	end
+end
+
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
@@ -53,11 +113,11 @@ local function createBackLayer()
 	backLayer:addChild(menuSprite)
 
     local function onTouchBegan(x, y)
-		cclog("onTouchBegan: %0.2f, %0.2f", x, y)
-		CCLuaLog("touch began...")
+		--cclog("onTouchBegan: %0.2f, %0.2f", x, y)
+		--CCLuaLog("touch began...")
 		local cell = touchPointToCell(x, y)
 		cclog("touchCell: %d, %d", cell.x, cell.y)
-		--SceneLoader:ChangeScene("game")
+		
         -- CCTOUCHBEGAN event must return true
         return true
     end
@@ -74,28 +134,31 @@ local function createBackLayer()
 	return backLayer
 end
 
+
 -- create main menu
 function CreateGameScene()
    
-	local scene = CCScene:create()
+	scene = CCScene:create()
 	scene:addChild(createBackLayer())
 
 	AudioEngine.stopMusic(true)
 
 	local bgMusicPath = CCFileUtils:getInstance():fullPathForFilename("Sound/bgm_game.wav")
-    AudioEngine.playMusic(bgMusicPath, true)
+	AudioEngine.playMusic(bgMusicPath, true)
+
+	--local readyMusicPath = CCFileUtils:getInstance():fullPathForFilename("Sound/A_ready.wav")
+	--AudioEngine.playMusic(readyMusicPath, false)
+
+	--AudioEngine.playEffect("Sound/A_ready.wav")
+
+	--local effectSelectPath = CCFileUtils:getInstance():fullPathForFilename("Sound/A_select.wav")
+	--AudioEngine.preloadEffect(effectSelectPath)
 
 	loadGameIcon()
 
-	for cellY=1, 4 do
-		for cellX = 1, 7 do
-			local iconSprite = getGameIconSprite(cellY, cellX)
-			local cell = {x = cellX, y = cellY}
-			local cellPoint = getCellCenterPoint(cell)
-			iconSprite:setPosition(CCPoint(cellPoint.x, cellPoint.y))
-			scene:addChild(iconSprite)
-		end
-	end
+	initGameBoard()
+
+
 
     return scene
 end
