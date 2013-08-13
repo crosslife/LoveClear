@@ -13,8 +13,11 @@ local scene = nil
 
 local curSelectTag = nil
 
-local ICON_TAG_START = 10000
-local SELECT_TAG_START = 20000
+local NODE_TAG_START = 1000
+local NORMAL_TAG = 10
+local SELECT_TAG = 20
+
+local isTouching = false
 
 local touchStartPoint = {}
 local touchEndPoint = {}
@@ -76,34 +79,62 @@ local function initGameBoard()
 			local cell = {x = x, y = y}
 			local cellPoint = getCellCenterPoint(cell)
 
-			iconNormalSprite:setPosition(CCPoint(cellPoint.x, cellPoint.y))
-			iconNormalSprite:setTag(ICON_TAG_START + 10 * x + y)
-
-			iconSelectSprite:setPosition(CCPoint(cellPoint.x, cellPoint.y))
-			iconSelectSprite:setTag(SELECT_TAG_START + 10 * x + y)
+			iconNormalSprite:setTag(NORMAL_TAG)
+			iconSelectSprite:setTag(SELECT_TAG)
 			iconSelectSprite:setVisible(false)
 
-			scene:addChild(iconNormalSprite)
-			scene:addChild(iconSelectSprite)
+			local iconNode = CCNode:create()
+			iconNode:setTag(NODE_TAG_START + 10 * x + y)
+
+			iconNode:addChild(iconNormalSprite)
+			iconNode:addChild(iconSelectSprite)
+			iconNode:setPosition(CCPoint(cellPoint.x, cellPoint.y))
+
+			scene:addChild(iconNode)
 		end
 	end
 end
 
 local function onClickGameIcon(cell)
-	local normalTag = ICON_TAG_START + 10 * cell.x + cell.y
-	local selectTag = SELECT_TAG_START + 10 * cell.x + cell.y
-
 	if curSelectTag ~= nil then
-		scene:getChildByTag(ICON_TAG_START + curSelectTag):setVisible(true)
-		scene:getChildByTag(SELECT_TAG_START + curSelectTag):setVisible(false)
+		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(NORMAL_TAG):setVisible(true)
+		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(SELECT_TAG):setVisible(false)
 	end
 
 	curSelectTag = 10 * cell.x + cell.y
 
-	scene:getChildByTag(ICON_TAG_START + curSelectTag):setVisible(false)
-	scene:getChildByTag(SELECT_TAG_START + curSelectTag):setVisible(true)
+	scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(NORMAL_TAG):setVisible(false)
+	scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(SELECT_TAG):setVisible(true)
 
 	AudioEngine.playEffect("Sound/A_select.wav")
+end
+
+local function switchCell(cellA, cellB)
+	isTouching = false
+
+	if curSelectTag ~= nil then
+		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(NORMAL_TAG):setVisible(true)
+		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(SELECT_TAG):setVisible(false)
+		curSelectTag = nil
+	end
+
+	local tagA = 10 * cellA.x + cellA.y
+	local tagB = 10 * cellB.x + cellB.y
+
+	local cellPointA = getCellCenterPoint(cellA)
+	local cellPointB = getCellCenterPoint(cellB)
+
+	local nodeA = scene:getChildByTag(NODE_TAG_START + tagA)
+	local nodeB = scene:getChildByTag(NODE_TAG_START + tagB)
+
+	local moveToB = CCMoveTo:create(0.1, CCPoint(cellPointB.x, cellPointB.y))
+	local moveToA = CCMoveTo:create(0.1, CCPoint(cellPointA.x, cellPointA.y))	
+
+	nodeA:runAction(moveToB)
+	nodeB:runAction(moveToA)
+
+	nodeA:setTag(NODE_TAG_START + tagB)
+	nodeB:setTag(NODE_TAG_START + tagA)
 end
 
 local function createBackLayer()
@@ -131,25 +162,37 @@ local function createTouchLayer()
 	touchLayer:changeWidthAndHeight(visibleSize.width, visibleSize.height)
 
     local function onTouchBegan(x, y)
-		cclog("touchLayerBegan: %.2f, %.2f", x, y)
+		--cclog("touchLayerBegan: %.2f, %.2f", x, y)
+		isTouching = true
 		touchStartPoint = {x = x, y = y}
 		touchStartCell = touchPointToCell(x, y)
+		onClickGameIcon(touchStartCell)
+
         return true
     end
 
 	local function onTouchMoved(x, y)
-		cclog("touchLayerMoved: %.2f, %.2f", x, y)
-		
+		--cclog("touchLayerMoved: %.2f, %.2f", x, y)
+		local touchCurCell = touchPointToCell(x, y)
+		if	isTouching then
+			if touchCurCell.x ~= touchStartCell.x or touchCurCell.y ~= touchStartCell.y then
+				if (math.abs(touchCurCell.x - touchStartCell.x) == 1 and touchCurCell.y == touchStartCell.y)
+				or (math.abs(touchCurCell.y - touchStartCell.y) == 1 and touchCurCell.x == touchStartCell.x) then
+					
+					switchCell(touchCurCell, touchStartCell)
+				end				
+			end
+		end		
     end
 
 	local function onTouchEnded(x, y)
-		cclog("touchLayerEnded: %.2f, %.2f", x, y)
+		--cclog("touchLayerEnded: %.2f, %.2f", x, y)
 		touchEndPoint = {x = x, y = y}
 		touchEndCell = touchPointToCell(x, y)
-
-		if touchEndCell.x == touchStartCell.x and touchEndCell.y == touchEndCell.y then
-			onClickGameIcon(touchEndCell)
-		end
+		isTouching = false
+		--if touchEndCell.x == touchStartCell.x and touchEndCell.y == touchEndCell.y then
+			--onClickGameIcon(touchEndCell)
+		--end
     end
 
 
