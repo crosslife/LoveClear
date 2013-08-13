@@ -13,6 +13,17 @@ local scene = nil
 
 local curSelectTag = nil
 
+local ICON_TAG_START = 10000
+local SELECT_TAG_START = 20000
+
+local touchStartPoint = {}
+local touchEndPoint = {}
+
+local touchStartCell = {}
+local touchEndCell = {}
+
+local visibleSize = CCDirector:getInstance():getVisibleSize()
+
 local function touchPointToCell(x, y)
 	local cellX = math.modf((x - GLeftBottomOffsetX) / GCellWidth)
 	local cellY = math.modf((y - GLeftBottomOffsetY) / GCellWidth)
@@ -21,11 +32,11 @@ local function touchPointToCell(x, y)
 	cell.y = cellY + 1
 
 	if cell.x > GBoardSizeX then
-		cell.x = GBoardSizeX - 1
+		cell.x = GBoardSizeX
 	end
 
 	if cell.y > GBoardSizeY then
-		cell.y = GBoardSizeY - 1
+		cell.y = GBoardSizeY
 	end
 
 	return cell
@@ -49,9 +60,6 @@ local function getGameIconSprite(type, index)
 	return iconSprite
 end
 
-
-
-
 local function initGameBoard()
 	for	x = 1, 7 do
 		for y = 1, 7 do
@@ -60,78 +68,105 @@ local function initGameBoard()
 		end
 	end
 
-	local function onClickGameIcon(tag)
-		cclog("click..."..tag)
-		if curSelectTag ~= nil then
-			cclog("unselected.."..curSelectTag)
-			scene:getChildByTag(curSelectTag):getChildByTag(curSelectTag):unselected()
-		end
-
-		curSelectTag = tag
-		scene:getChildByTag(curSelectTag):getChildByTag(curSelectTag):selected()
-
-		AudioEngine.playEffect("Sound/A_select.wav")
-	end
-
 	for x=1, 7 do
 		for y = 1, 7 do
 			local iconNormalSprite = getGameIconSprite(1, GameBoard[x][y])
 			local iconSelectSprite = getGameIconSprite(4, GameBoard[x][y])
-			iconSelectSprite:setPosition(-6, -6)
 
-			local iconMenuSprite = CCMenuItemSprite:create(iconNormalSprite, iconSelectSprite)
-			--iconMenuSprite:setTag(100)
-			iconMenuSprite:registerScriptTapHandler(onClickGameIcon)
-
-			local iconMenu = CCMenu:create()
-			iconMenu:addChild(iconMenuSprite, 10, 10 * x + y)
-			 
 			local cell = {x = x, y = y}
 			local cellPoint = getCellCenterPoint(cell)
-			iconMenu:setPosition(CCPoint(cellPoint.x, cellPoint.y))
-			iconMenu:setTag(10 * x + y)
 
-			scene:addChild(iconMenu)
+			iconNormalSprite:setPosition(CCPoint(cellPoint.x, cellPoint.y))
+			iconNormalSprite:setTag(ICON_TAG_START + 10 * x + y)
+
+			iconSelectSprite:setPosition(CCPoint(cellPoint.x, cellPoint.y))
+			iconSelectSprite:setTag(SELECT_TAG_START + 10 * x + y)
+			iconSelectSprite:setVisible(false)
+
+			scene:addChild(iconNormalSprite)
+			scene:addChild(iconSelectSprite)
 		end
 	end
+end
+
+local function onClickGameIcon(cell)
+	local normalTag = ICON_TAG_START + 10 * cell.x + cell.y
+	local selectTag = SELECT_TAG_START + 10 * cell.x + cell.y
+
+	if curSelectTag ~= nil then
+		scene:getChildByTag(ICON_TAG_START + curSelectTag):setVisible(true)
+		scene:getChildByTag(SELECT_TAG_START + curSelectTag):setVisible(false)
+	end
+
+	curSelectTag = 10 * cell.x + cell.y
+
+	scene:getChildByTag(ICON_TAG_START + curSelectTag):setVisible(false)
+	scene:getChildByTag(SELECT_TAG_START + curSelectTag):setVisible(true)
+
+	AudioEngine.playEffect("Sound/A_select.wav")
 end
 
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
-	local textureMenu = CCTextureCache:getInstance():addImage("imgs/game_bg.png")
+	local textureBack = CCTextureCache:getInstance():addImage("imgs/game_bg.png")
 
 	local visibleSize = CCDirector:getInstance():getVisibleSize()	
 	rect = CCRect(0, 0, visibleSize.width, visibleSize.height)
-    local menuFrame = CCSpriteFrame:createWithTexture(textureMenu, rect)
+    local backFrame = CCSpriteFrame:createWithTexture(textureBack, rect)
 
-    local menuSprite = CCSprite:createWithSpriteFrame(menuFrame)
-	menuSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+    local backSprite = CCSprite:createWithSpriteFrame(backFrame)
+	backSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
 
-	--set scale
-	--menuSprite:setScaleX(visibleSize.width/frameWidth)
-	backLayer:addChild(menuSprite)
+	backLayer:addChild(backSprite)
+
+	return backLayer
+end
+
+local function createTouchLayer()
+
+	local touchColor = Color4B:new(255, 255, 255 ,0)
+	local touchLayer = CCLayerColor:create(touchColor)
+
+	touchLayer:changeWidthAndHeight(visibleSize.width, visibleSize.height)
 
     local function onTouchBegan(x, y)
-		--cclog("onTouchBegan: %0.2f, %0.2f", x, y)
-		--CCLuaLog("touch began...")
-		local cell = touchPointToCell(x, y)
-		cclog("touchCell: %d, %d", cell.x, cell.y)
-		
-        -- CCTOUCHBEGAN event must return true
+		cclog("touchLayerBegan: %.2f, %.2f", x, y)
+		touchStartPoint = {x = x, y = y}
+		touchStartCell = touchPointToCell(x, y)
         return true
     end
+
+	local function onTouchMoved(x, y)
+		cclog("touchLayerMoved: %.2f, %.2f", x, y)
+		
+    end
+
+	local function onTouchEnded(x, y)
+		cclog("touchLayerEnded: %.2f, %.2f", x, y)
+		touchEndPoint = {x = x, y = y}
+		touchEndCell = touchPointToCell(x, y)
+
+		if touchEndCell.x == touchStartCell.x and touchEndCell.y == touchEndCell.y then
+			onClickGameIcon(touchEndCell)
+		end
+    end
+
 
     local function onTouch(eventType, x, y)
         if eventType == "began" then   
             return onTouchBegan(x, y)
+		elseif eventType == "moved" then
+			return onTouchMoved(x, y)
+		elseif eventType == "ended" then
+			return onTouchEnded(x, y)
         end
     end
 
-    backLayer:registerScriptTouchHandler(onTouch)
-    backLayer:setTouchEnabled(true)
+    touchLayer:registerScriptTouchHandler(onTouch)
+    touchLayer:setTouchEnabled(true)
 
-	return backLayer
+	return touchLayer
 end
 
 
@@ -146,19 +181,11 @@ function CreateGameScene()
 	local bgMusicPath = CCFileUtils:getInstance():fullPathForFilename("Sound/bgm_game.wav")
 	AudioEngine.playMusic(bgMusicPath, true)
 
-	--local readyMusicPath = CCFileUtils:getInstance():fullPathForFilename("Sound/A_ready.wav")
-	--AudioEngine.playMusic(readyMusicPath, false)
-
-	--AudioEngine.playEffect("Sound/A_ready.wav")
-
-	--local effectSelectPath = CCFileUtils:getInstance():fullPathForFilename("Sound/A_select.wav")
-	--AudioEngine.preloadEffect(effectSelectPath)
-
 	loadGameIcon()
 
 	initGameBoard()
 
-
+	scene:addChild(createTouchLayer(), 1000)
 
     return scene
 end
