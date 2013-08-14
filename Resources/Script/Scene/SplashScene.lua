@@ -47,6 +47,25 @@ local function createEyeSprite()
 	return eyeSprite
 end
 
+local function createPressScreenInfo()
+	local testLabel = CCLabelTTF:create("Press Screen", "Arial", 30)
+	local arrayOfActions = CCArray:create()			
+	local scale1 = CCScaleTo:create(1.5, 1.2)
+	local scale2 = CCScaleTo:create(1.5, 1)			
+
+	arrayOfActions:addObject(scale1)
+	arrayOfActions:addObject(scale2)
+
+	local sequence = CCSequence:create(arrayOfActions)
+
+	local repeatFunc = CCRepeatForever:create(sequence)
+	testLabel:runAction(repeatFunc)
+
+	testLabel:setPosition(CCPoint(visibleSize.width / 2, 130))
+
+	return testLabel
+end
+
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
@@ -64,21 +83,7 @@ local function createBackLayer()
 
 	backLayer:addChild(splashSprite)
 
-	--add text info
-	local testLabel = CCLabelTTF:create("Press Screen", "Arial", 30)
-	local arrayOfActions = CCArray:create()			
-	local scale1 = CCScaleTo:create(1.5, 1.2)
-	local scale2 = CCScaleTo:create(1.5, 1)			
-
-	arrayOfActions:addObject(scale1)
-	arrayOfActions:addObject(scale2)
-
-	local sequence = CCSequence:create(arrayOfActions)
-
-	local repeatFunc = CCRepeatForever:create(sequence)
-	testLabel:runAction(repeatFunc)
-
-	testLabel:setPosition(CCPoint(visibleSize.width / 2, 130))
+	local testLabel = createPressScreenInfo()
 	backLayer:addChild(testLabel)
 
     -- handing touch events

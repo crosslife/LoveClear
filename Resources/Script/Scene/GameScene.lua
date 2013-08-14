@@ -127,8 +127,18 @@ end
 
 local function resetSelectGameIcon()
 	if curSelectTag ~= nil then
-		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(NORMAL_TAG):setVisible(true)
-		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(SELECT_TAG):setVisible(false)
+		local cellNode = scene:getChildByTag(NODE_TAG_START + curSelectTag)
+		if cellNode ~= nil then
+			local normalSprite = cellNode:getChildByTag(NORMAL_TAG)
+			local selectSprite = cellNode:getChildByTag(SELECT_TAG)
+			if normalSprite ~= nil then 
+				normalSprite:setVisible(true)
+			end 
+
+			if selectSprite ~= nil then
+				selectSprite:setVisible(false)
+			end
+		end
 		curSelectTag = nil
 	end
 end
