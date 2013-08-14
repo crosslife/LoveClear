@@ -24,20 +24,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 require("Script/Scene/GameScene")
 
 
-
+local visibleSize = CCDirector:getInstance():getVisibleSize()	
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
-	local textureMenu = CCTextureCache:getInstance():addImage("imgs/menu_bg.png")
-	local visibleSize = CCDirector:getInstance():getVisibleSize()	
+	local menuSprite = CCSprite:create("imgs/menu_bg.png")
 
-	rect = CCRect(0, 0, visibleSize.width, visibleSize.height)
-    local menuFrame = CCSpriteFrame:createWithTexture(textureMenu, rect)
-
-    local menuSprite = CCSprite:createWithSpriteFrame(menuFrame)
 	menuSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
-	--set scale
-	--menuSprite:setScaleX(visibleSize.width/frameWidth)
 
 	backLayer:addChild(menuSprite)
 

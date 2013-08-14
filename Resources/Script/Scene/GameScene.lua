@@ -175,13 +175,8 @@ end
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
-	local textureBack = CCTextureCache:getInstance():addImage("imgs/game_bg.png")
+	local backSprite = CCSprite:create("imgs/game_bg.png")
 
-	local visibleSize = CCDirector:getInstance():getVisibleSize()	
-	rect = CCRect(0, 0, visibleSize.width, visibleSize.height)
-    local backFrame = CCSpriteFrame:createWithTexture(textureBack, rect)
-
-    local backSprite = CCSprite:createWithSpriteFrame(backFrame)
 	backSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
 
 	backLayer:addChild(backSprite)
