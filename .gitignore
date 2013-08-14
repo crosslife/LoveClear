@@ -9,3 +9,5 @@ proj.android/bin/
 proj.android/gen/crosslife/MyGitGame/BuildConfig.java
 proj.android/gen/crosslife/MyGitGame/R.java
 proj.win32/LuaResource/LuaResource.vcxproj.rej
+proj.win32/LoveClear.opensdf
+proj.win32/LoveClear.sdf

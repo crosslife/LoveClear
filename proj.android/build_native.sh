@@ -1,4 +1,4 @@
-APPNAME="MyGitGame"
+APPNAME="LoveClear"
 
 # options
 

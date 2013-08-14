@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
-package crosslife.MyGitGame;
+package crosslife.LoveClear;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
@@ -29,7 +29,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-public class MyGitGame extends Cocos2dxActivity{
+public class LoveClear extends Cocos2dxActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 	}
