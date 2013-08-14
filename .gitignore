@@ -9,3 +9,4 @@ proj.android/gen/
 proj.win32/LoveClear.sdf
 proj.win32/LuaResource/Debug/
 proj.win32/LoveClear.opensdf
+proj.android/.settings/

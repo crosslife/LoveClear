@@ -180,6 +180,74 @@ local function switchCell(cellA, cellB)
 
 	--update gameboard
 	GameBoard[cellA.x][cellA.y], GameBoard[cellB.x][cellB.y] = GameBoard[cellB.x][cellB.y], GameBoard[cellA.x][cellA.y]
+	AudioEngine.playEffect("Sound/A_combo1.wav")
+	
+end
+
+local function falseMoveCell(cellA, cellB)
+	isTouching = false
+
+	resetSelectGameIcon()
+
+	local tagA = 10 * cellA.x + cellA.y
+	local tagB = 10 * cellB.x + cellB.y
+
+	local cellPointA = getCellCenterPoint(cellA)
+	local cellPointB = getCellCenterPoint(cellB)
+
+	local nodeA = scene:getChildByTag(NODE_TAG_START + tagA)
+	local nodeB = scene:getChildByTag(NODE_TAG_START + tagB)
+
+	local function roundMove(node, nowPoint, desPoint)
+		local arrayOfActions = CCArray:create()			
+		local moveForward = CCMoveTo:create(0.1, CCPoint(desPoint.x, desPoint.y))
+		local moveBack = CCMoveTo:create(0.1, CCPoint(nowPoint.x, nowPoint.y))	
+
+		arrayOfActions:addObject(moveForward)
+		arrayOfActions:addObject(moveBack)
+
+		local sequence = CCSequence:create(arrayOfActions)
+
+		if node ~= nil then
+			node:runAction(sequence)
+		end		
+	end
+
+	roundMove(nodeA, cellPointA, cellPointB)
+	roundMove(nodeB, cellPointB, cellPointA)
+	AudioEngine.playEffect("Sound/A_falsemove.wav")
+end
+
+--检查某个格子是否组成3连
+local function checkCell(cell)
+	local x = cell.x
+	local y = cell.y
+
+	local index = GameBoard[x][y]
+
+	local ret = false
+	if x > 1 and GameBoard[x-1][y] == index then
+		if (x > 2 and GameBoard[x-2][y] == index) or (x < GBoardSizeX and GameBoard[x+1][y] == index) then
+			cclog("left")
+			ret = true
+		end
+	elseif x < GBoardSizeX and GameBoard[x+1][y] == index then
+		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) or (x > 1 and GameBoard[x-1][y] == index) then
+			cclog("right")
+			ret = true
+		end
+	elseif y > 1 and GameBoard[x][y-1] == index then
+		if (y > 2 and GameBoard[x][y-2] == index) or (y < GBoardSizeY and GameBoard[x][y+1] == index) then
+			cclog("down")
+			ret = true
+		end
+	elseif y < GBoardSizeY and GameBoard[x][y+1] == index then
+		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) or (y > 1 and GameBoard[x][y-1] == index) then
+			cclog("up")
+			ret = true
+		end
+	end
+	return ret
 end
 
 local function createBackLayer()
@@ -210,7 +278,18 @@ local function createTouchLayer()
 			local curSelectCell = {x = math.modf(curSelectTag / 10), y = curSelectTag % 10}
 			if (math.abs(curSelectCell.x - touchStartCell.x) == 1 and curSelectCell.y == touchStartCell.y)
 			or (math.abs(curSelectCell.y - touchStartCell.y) == 1 and curSelectCell.x == touchStartCell.x) then					
-				switchCell(curSelectCell, touchStartCell)
+				--模拟移动后数据
+				GameBoard[curSelectCell.x][curSelectCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[curSelectCell.x][curSelectCell.y]	
+
+				local checkRet = checkCell(touchStartCell) or checkCell(curSelectCell)
+				if checkRet == true then
+					switchCell(curSelectCell, touchStartCell)
+				else
+					falseMoveCell(curSelectCell, touchStartCell)
+				end		
+
+				--还原数据，如果发生了移动，则移动内部已经互换了数据
+				GameBoard[curSelectCell.x][curSelectCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[curSelectCell.x][curSelectCell.y]	
 				return true
 			end	
 		end
@@ -227,8 +306,19 @@ local function createTouchLayer()
 		if	isTouching then
 			if touchCurCell.x ~= touchStartCell.x or touchCurCell.y ~= touchStartCell.y then
 				if (math.abs(touchCurCell.x - touchStartCell.x) == 1 and touchCurCell.y == touchStartCell.y)
-				or (math.abs(touchCurCell.y - touchStartCell.y) == 1 and touchCurCell.x == touchStartCell.x) then					
-					switchCell(touchCurCell, touchStartCell)
+				or (math.abs(touchCurCell.y - touchStartCell.y) == 1 and touchCurCell.x == touchStartCell.x) then	
+					--模拟移动后数据
+					GameBoard[touchCurCell.x][touchCurCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[touchCurCell.x][touchCurCell.y]	
+
+					local checkRet = checkCell(touchStartCell) or checkCell(touchCurCell)
+					if checkRet == true then
+						switchCell(touchCurCell, touchStartCell)
+					else
+						falseMoveCell(touchCurCell, touchStartCell)
+					end		
+
+					--还原数据，如果发生了移动，则移动内部已经互换了数据
+					GameBoard[touchCurCell.x][touchCurCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[touchCurCell.x][touchCurCell.y]						
 				end				
 			end
 		end		
