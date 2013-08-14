@@ -169,7 +169,7 @@ local function switchCell(cellA, cellB)
 	nodeB:setTag(NODE_TAG_START + tagA)
 
 	--update gameboard
-	GameBoard[cellA.x][cellA.y], GameBoard[cellB.x][cellB.y] = GameBoard[cellB.x][cellB.y], GameBoard[cellB.x][cellB.y]
+	GameBoard[cellA.x][cellA.y], GameBoard[cellB.x][cellB.y] = GameBoard[cellB.x][cellB.y], GameBoard[cellA.x][cellA.y]
 end
 
 local function createBackLayer()
