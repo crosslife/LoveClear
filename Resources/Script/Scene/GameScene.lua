@@ -50,6 +50,7 @@ local touchEndCell = {}
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()
 
+--触摸点转化为棋盘格子点
 local function touchPointToCell(x, y)
 	local cellX = math.modf((x - GLeftBottomOffsetX) / GCellWidth)
 	local cellY = math.modf((y - GLeftBottomOffsetY) / GCellWidth)
@@ -68,6 +69,7 @@ local function touchPointToCell(x, y)
 	return cell
 end
 
+--获取某个格子的中心坐标
 local function getCellCenterPoint(cell)
 	local point = {}
 	point.x = (cell.x - 1) * GCellWidth + GLeftBottomOffsetX + GCellWidth / 2
@@ -76,16 +78,19 @@ local function getCellCenterPoint(cell)
 	return point
 end
 
+--加载游戏图标资源
 local function loadGameIcon()
 	CCSpriteFrameCache:getInstance():addSpriteFramesWithFile("imgs/GameIcon.plist")
 end
 
+--获取某个棋子
 local function getGameIconSprite(type, index)
 	local iconFrame = CCSpriteFrameCache:getInstance():getSpriteFrameByName("icon"..type..index..".png")
 	local iconSprite = CCSprite:createWithSpriteFrame(iconFrame)
 	return iconSprite
 end
 
+--初始化棋盘
 local function initGameBoard()
 	for	x = 1, 7 do
 		for y = 1, 7 do
@@ -96,6 +101,8 @@ local function initGameBoard()
 
 	for x=1, 7 do
 		for y = 1, 7 do
+
+			--每个节点创建两个sprite
 			local iconNormalSprite = getGameIconSprite(1, GameBoard[x][y])
 			local iconSelectSprite = getGameIconSprite(4, GameBoard[x][y])
 
@@ -118,11 +125,16 @@ local function initGameBoard()
 	end
 end
 
-local function onClickGameIcon(cell)
+local function resetSelectGameIcon()
 	if curSelectTag ~= nil then
 		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(NORMAL_TAG):setVisible(true)
 		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(SELECT_TAG):setVisible(false)
+		curSelectTag = nil
 	end
+end
+
+local function onClickGameIcon(cell)
+	resetSelectGameIcon()
 
 	curSelectTag = 10 * cell.x + cell.y
 
@@ -135,11 +147,7 @@ end
 local function switchCell(cellA, cellB)
 	isTouching = false
 
-	if curSelectTag ~= nil then
-		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(NORMAL_TAG):setVisible(true)
-		scene:getChildByTag(NODE_TAG_START + curSelectTag):getChildByTag(SELECT_TAG):setVisible(false)
-		curSelectTag = nil
-	end
+	resetSelectGameIcon()
 
 	local tagA = 10 * cellA.x + cellA.y
 	local tagB = 10 * cellB.x + cellB.y
@@ -204,8 +212,7 @@ local function createTouchLayer()
 		if	isTouching then
 			if touchCurCell.x ~= touchStartCell.x or touchCurCell.y ~= touchStartCell.y then
 				if (math.abs(touchCurCell.x - touchStartCell.x) == 1 and touchCurCell.y == touchStartCell.y)
-				or (math.abs(touchCurCell.y - touchStartCell.y) == 1 and touchCurCell.x == touchStartCell.x) then
-					
+				or (math.abs(touchCurCell.y - touchStartCell.y) == 1 and touchCurCell.x == touchStartCell.x) then					
 					switchCell(touchCurCell, touchStartCell)
 				end				
 			end
@@ -217,9 +224,6 @@ local function createTouchLayer()
 		touchEndPoint = {x = x, y = y}
 		touchEndCell = touchPointToCell(x, y)
 		isTouching = false
-		--if touchEndCell.x == touchStartCell.x and touchEndCell.y == touchEndCell.y then
-			--onClickGameIcon(touchEndCell)
-		--end
     end
 
 
@@ -240,7 +244,7 @@ local function createTouchLayer()
 end
 
 
--- create main menu
+-- create game scene
 function CreateGameScene()
    
 	scene = CCScene:create()
