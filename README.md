@@ -7,6 +7,4 @@
 
 3. Enjoy it!
 
-<br>
-
 <img src="Resources/imgs/test.gif">
