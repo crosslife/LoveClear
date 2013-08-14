@@ -211,6 +211,7 @@ local function createTouchLayer()
 			if (math.abs(curSelectCell.x - touchStartCell.x) == 1 and curSelectCell.y == touchStartCell.y)
 			or (math.abs(curSelectCell.y - touchStartCell.y) == 1 and curSelectCell.x == touchStartCell.x) then					
 				switchCell(curSelectCell, touchStartCell)
+				return true
 			end	
 		end
 		
