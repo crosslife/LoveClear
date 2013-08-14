@@ -231,17 +231,23 @@ local function checkCell(cell)
 			cclog("left")
 			ret = true
 		end
-	elseif x < GBoardSizeX and GameBoard[x+1][y] == index then
+	end
+
+	if x < GBoardSizeX and GameBoard[x+1][y] == index then
 		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) or (x > 1 and GameBoard[x-1][y] == index) then
 			cclog("right")
 			ret = true
 		end
-	elseif y > 1 and GameBoard[x][y-1] == index then
+	end
+
+	if y > 1 and GameBoard[x][y-1] == index then
 		if (y > 2 and GameBoard[x][y-2] == index) or (y < GBoardSizeY and GameBoard[x][y+1] == index) then
 			cclog("down")
 			ret = true
 		end
-	elseif y < GBoardSizeY and GameBoard[x][y+1] == index then
+	end
+
+	if y < GBoardSizeY and GameBoard[x][y+1] == index then
 		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) or (y > 1 and GameBoard[x][y-1] == index) then
 			cclog("up")
 			ret = true
