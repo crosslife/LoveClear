@@ -206,6 +206,15 @@ local function createTouchLayer()
 		isTouching = true
 		touchStartPoint = {x = x, y = y}
 		touchStartCell = touchPointToCell(x, y)
+		if curSelectTag ~= nil then
+			local curSelectCell = {x = math.modf(curSelectTag / 10), y = curSelectTag % 10}
+			if (math.abs(curSelectCell.x - touchStartCell.x) == 1 and curSelectCell.y == touchStartCell.y)
+			or (math.abs(curSelectCell.y - touchStartCell.y) == 1 and curSelectCell.x == touchStartCell.x) then					
+				switchCell(curSelectCell, touchStartCell)
+			end	
+		end
+		
+
 		onClickGameIcon(touchStartCell)
 
         return true
