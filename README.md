@@ -1,7 +1,8 @@
-LoveClear test
+天天爱消除精简版
 =========
 
-1. 下载cocos2dx 完整源码包
-2. 创建新的工程
-    $ ./create-multi-platform-projects.py -p MyGitGame -k com.your_company.MyGitGame -l lua
-3. 将新的工程内容替换为本工程
+1. 下载cocos2d-x v3.0-pre-alpha0 <a href="http://cocos2d-x.googlecode.com/files/cocos2d-x-3.0alpha0-pre.zip">点此下载</a>
+
+2. 下载本项目工程到/projects 目录下
+
+3. Enjoy it!
