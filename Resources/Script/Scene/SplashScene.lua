@@ -22,6 +22,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
 require("Script/Scene/MainMenuScene")
+require("Script/Scene/GameScene")
 require "AudioEngine" 
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()	
@@ -85,7 +86,7 @@ local function createBackLayer()
 
     local function onTouchBegan(x, y)
 		CCLuaLog("touch began...")
-		CCDirector:getInstance():replaceScene(CreateMenuScene())
+		CCDirector:getInstance():replaceScene(CreateGameScene())
         touchBeginPoint = {x = x, y = y}
         -- CCTOUCHBEGAN event must return true
         return true
