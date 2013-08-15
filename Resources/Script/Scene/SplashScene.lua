@@ -76,7 +76,7 @@ local function createBackLayer()
     local splashFrame = CCSpriteFrame:createWithTexture(textureSplash, rect)
 
     local splashSprite = CCSprite:createWithSpriteFrame(splashFrame)
-	splashSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+	splashSprite:setPosition(splashSprite:getContentSize().width / 2, splashSprite:getContentSize().height / 2)
 
 	--set scale
 	--splashSprite:setScaleX(visibleSize.width/frameWidth)
@@ -119,10 +119,11 @@ function CreateSplashScene()
     AudioEngine.playMusic(bgMusicPath, true)
 
 	local eyeSprite1 = createEyeSprite()
-	eyeSprite1:setPosition(CCPoint(visibleSize.width / 2 - 50, visibleSize.height / 2 + 180))
+	eyeSprite1:setPosition(CCPoint(GBackGroundMiddlePoint.x - 50, GBackGroundMiddlePoint.y + 180))
+	cclog("GBackGroundMiddlePoint  "..GBackGroundMiddlePoint.x.."  "..GBackGroundMiddlePoint.y)
 
 	local eyeSprite2 = createEyeSprite()
-	eyeSprite2:setPosition(CCPoint(visibleSize.width / 2 + 50, visibleSize.height / 2 + 180))
+	eyeSprite2:setPosition(CCPoint(GBackGroundMiddlePoint.x + 50, GBackGroundMiddlePoint.y + 180))
 
 	scene:addChild(eyeSprite1)
 	scene:addChild(eyeSprite2)

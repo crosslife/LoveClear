@@ -111,6 +111,10 @@ local function onClickGameIcon(cell)
 	AudioEngine.playEffect("Sound/A_select.wav")
 end
 
+local function callFuncTest()
+	cclog("callFuncTest...")
+end
+
 --½»»»ÏàÁÚÆå×Ó
 local function switchCell(cellA, cellB)
 	isTouching = false
@@ -129,7 +133,21 @@ local function switchCell(cellA, cellB)
 	local moveToB = CCMoveTo:create(0.1, CCPoint(cellPointB.x, cellPointB.y))
 	local moveToA = CCMoveTo:create(0.1, CCPoint(cellPointA.x, cellPointA.y))	
 
-	nodeA:runAction(moveToB)
+	local function testMoveCallBack()
+		cclog("test call back")
+		local arrayOfActions = CCArray:create()			
+		local moveToB = CCMoveTo:create(0.1, CCPoint(cellPointB.x, cellPointB.y))
+		local callBack = CCCallFunc:create(callFuncTest)
+
+		arrayOfActions:addObject(moveToB)
+		arrayOfActions:addObject(callBack)
+
+		local sequence = CCSequence:create(arrayOfActions)
+		nodeA:runAction(sequence)
+	end
+
+	testMoveCallBack()
+	--nodeA:runAction(moveToB)
 	nodeB:runAction(moveToA)
 
 	--update tag
@@ -183,7 +201,7 @@ local function createBackLayer()
 
 	local backSprite = CCSprite:create("imgs/game_bg.png")
 
-	backSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+	backSprite:setPosition(backSprite:getContentSize().width / 2, backSprite:getContentSize().height / 2)
 
 	backLayer:addChild(backSprite)
 

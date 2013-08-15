@@ -30,7 +30,7 @@ local function createBackLayer()
 
 	local menuSprite = CCSprite:create("imgs/menu_bg.png")
 
-	menuSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+	menuSprite:setPosition(menuSprite:getContentSize().width / 2, menuSprite:getContentSize().height / 2)
 
 	backLayer:addChild(menuSprite)
 
