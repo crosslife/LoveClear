@@ -24,20 +24,21 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 require "Script/Config/CommonDefine"
 
 GameBoard = {}
-GameBoard[1] = {}
-GameBoard[2] = {}
-GameBoard[3] = {}
-GameBoard[4] = {}
-GameBoard[5] = {}
-GameBoard[6] = {}
-GameBoard[7] = {}
+for i = 1, GBoardSizeX do
+	GameBoard[i] = {}
+	for j = 1, GBoardSizeY do
+		GameBoard[i][j] = 0
+	end
+end
 
 --初始化棋盘数据
 function initGameBoard()
-	for	x = 1, 7 do
-		for y = 1, 7 do
-			math.randomseed(math.random(os.time()))
-			GameBoard[x][y] = math.random(7)
+	for	x = 1, GBoardSizeX do
+		for y = 1, GBoardSizeY do
+			repeat				
+				math.randomseed(math.random(os.time()))
+				GameBoard[x][y] = math.random(GGameIconCount)
+			until checkCell({x = x, y = y}) == false
 		end
 	end
 end

@@ -200,7 +200,7 @@ local function cfCheckCell()
 		cclog("switch success!!!")
 		AudioEngine.playEffect("Sound/A_combo1.wav")
 
-		--to do: 执行消除
+		--to do: 执行消除，填充棋盘
 	end
 
 end

@@ -32,6 +32,8 @@ GCellWidth = 90
 GBoardSizeX = 7
 GBoardSizeY = 7
 
+GGameIconCount = 7
+
 GBackGroundMiddlePoint = {x = 356, y = 512}
 
 cclog = function(...)
