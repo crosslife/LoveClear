@@ -80,6 +80,7 @@ local function initGameBoardIcon()
 	end
 end
 
+--重置之前选中棋子的选中状态
 local function resetSelectGameIcon()
 	if curSelectTag ~= nil then
 		local cellNode = scene:getChildByTag(NODE_TAG_START + curSelectTag)
@@ -98,6 +99,7 @@ local function resetSelectGameIcon()
 	end
 end
 
+--点击棋子更换图标效果
 local function onClickGameIcon(cell)
 	resetSelectGameIcon()
 
@@ -109,6 +111,7 @@ local function onClickGameIcon(cell)
 	AudioEngine.playEffect("Sound/A_select.wav")
 end
 
+--交换相邻棋子
 local function switchCell(cellA, cellB)
 	isTouching = false
 
@@ -139,6 +142,7 @@ local function switchCell(cellA, cellB)
 	
 end
 
+--不可移动的棋子
 local function falseMoveCell(cellA, cellB)
 	isTouching = false
 
@@ -172,8 +176,6 @@ local function falseMoveCell(cellA, cellB)
 	roundMove(nodeB, cellPointB, cellPointA)
 	AudioEngine.playEffect("Sound/A_falsemove.wav")
 end
-
-
 
 --背景层
 local function createBackLayer()
