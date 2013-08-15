@@ -67,19 +67,12 @@ local function createPressScreenInfo()
 end
 
 local function createBackLayer()
+
 	local backLayer = CCLayer:create()
 
-	local textureSplash = CCTextureCache:getInstance():addImage("imgs/splash_bg.png")
-
-	
-	rect = CCRect(0, 0, visibleSize.width, visibleSize.height)
-    local splashFrame = CCSpriteFrame:createWithTexture(textureSplash, rect)
-
-    local splashSprite = CCSprite:createWithSpriteFrame(splashFrame)
+    local splashSprite = CCSprite:create("imgs/splash_bg.png")
 	splashSprite:setPosition(splashSprite:getContentSize().width / 2, splashSprite:getContentSize().height / 2)
 
-	--set scale
-	--splashSprite:setScaleX(visibleSize.width/frameWidth)
 
 	backLayer:addChild(splashSprite)
 
