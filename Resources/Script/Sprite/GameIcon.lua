@@ -21,4 +21,19 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
-local function getPosRectByIndexType(iconIndex, type)
+GIconNormalType = 1
+GIconCryType = 2
+GIconMatchType = 3
+GIconSelectType = 4
+
+--加载游戏图标资源
+function loadGameIcon()
+	CCSpriteFrameCache:getInstance():addSpriteFramesWithFile("imgs/GameIcon.plist")
+end
+
+--获取某个棋子
+function getGameIconSprite(type, index)
+	local iconFrame = CCSpriteFrameCache:getInstance():getSpriteFrameByName("icon"..type..index..".png")
+	local iconSprite = CCSprite:createWithSpriteFrame(iconFrame)
+	return iconSprite
+end

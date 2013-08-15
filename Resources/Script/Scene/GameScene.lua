@@ -22,6 +22,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
 require "Script/Logic/GameBoardLogic"
+require "Script/Sprite/GameIcon"
 
 local scene = nil
 
@@ -29,7 +30,8 @@ local curSelectTag = nil
 
 local NODE_TAG_START = 1000
 local NORMAL_TAG = 10
-local SELECT_TAG = 20
+local MATCH_TAG = 30
+local SELECT_TAG = 40
 
 local REMOVED_TAG = 2000
 
@@ -47,37 +49,30 @@ local checkCellSet = {}
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()
 
---加载游戏图标资源
-local function loadGameIcon()
-	CCSpriteFrameCache:getInstance():addSpriteFramesWithFile("imgs/GameIcon.plist")
-end
-
---获取某个棋子
-local function getGameIconSprite(type, index)
-	local iconFrame = CCSpriteFrameCache:getInstance():getSpriteFrameByName("icon"..type..index..".png")
-	local iconSprite = CCSprite:createWithSpriteFrame(iconFrame)
-	return iconSprite
-end
-
 --初始化棋盘图标
 local function initGameBoardIcon()
-	for x=1, 7 do
-		for y = 1, 7 do
+	for x=1, GBoardSizeX do
+		for y = 1, GBoardSizeY do
 			--每个节点创建两个sprite
-			local iconNormalSprite = getGameIconSprite(1, GameBoard[x][y])
-			local iconSelectSprite = getGameIconSprite(4, GameBoard[x][y])
+			local iconNormalSprite = getGameIconSprite(GIconNormalType, GameBoard[x][y])
+			local iconMatchSprite = getGameIconSprite(GIconMatchType, GameBoard[x][y])
+			local iconSelectSprite = getGameIconSprite(GIconSelectType, GameBoard[x][y])
 
 			local cell = {x = x, y = y}
 			local cellPoint = getCellCenterPoint(cell)
 
 			iconNormalSprite:setTag(NORMAL_TAG)
+			iconMatchSprite:setTag(MATCH_TAG)
 			iconSelectSprite:setTag(SELECT_TAG)
+
+			iconMatchSprite:setVisible(false)
 			iconSelectSprite:setVisible(false)
 
 			local iconNode = CCNode:create()
 			iconNode:setTag(NODE_TAG_START + 10 * x + y)
 
 			iconNode:addChild(iconNormalSprite)
+			iconNode:addChild(iconMatchSprite)
 			iconNode:addChild(iconSelectSprite)
 			iconNode:setPosition(CCPoint(cellPoint.x, cellPoint.y))
 
@@ -173,12 +168,44 @@ local function switchCell(cellA, cellB, cfCallBack)
 end
 
 --移除格子回调函数
-local function cfRemoveSelf(node)
+local function cfRemoveSelf(matchSprite)
 	cclog("cf remove self")
-	if node == nil then
+	if matchSprite == nil then
 		cclog("remove failed")
 	else
-		node:removeFromParentAndCleanup(true)
+		matchSprite:getParent():removeFromParentAndCleanup(true)
+	end
+end
+
+--变为匹配图标并渐隐回调
+local function cfMatchAndFade(node)
+	if node ~= nil then
+		local normalSprite = node:getChildByTag(NORMAL_TAG)
+		local matchSprite = node:getChildByTag(MATCH_TAG)
+		local selectSprite = node:getChildByTag(SELECT_TAG)
+		if normalSprite ~= nil then 
+			normalSprite:setVisible(false)
+		end 
+
+		if selectSprite ~= nil then
+			selectSprite:setVisible(false)
+		end
+
+		if matchSprite ~= nil then
+			matchSprite:setVisible(true)
+
+			local arrayOfActions = CCArray:create()		
+			
+			local fade = CCFadeOut:create(0.5)
+			local removeFunc = CCCallFuncN:create(cfRemoveSelf)
+
+			arrayOfActions:addObject(fade)
+			arrayOfActions:addObject(removeFunc)
+		
+			local sequence = CCSequence:create(arrayOfActions)
+
+			matchSprite:runAction(sequence)
+		end
 	end
 end
 
@@ -193,16 +220,16 @@ local function removeCellSet(cellSet)
 		node:setTag(REMOVED_TAG)
 		GameBoard[cellSet[i].x][cellSet[i].y] = 0
 
-		local arrayOfActions = CCArray:create()		
+		--local arrayOfActions = CCArray:create()		
 			
-		local fade = CCScaleTo:create(0.5, 0)
-		local removeFunc = CCCallFuncN:create(cfRemoveSelf)
+		--local matchFunc = CCCallFuncN:create(cfMatchAndFade)
+		--local removeFunc = CCCallFuncN:create(cfRemoveSelf)
 
-		arrayOfActions:addObject(fade)
-		arrayOfActions:addObject(removeFunc)
+		--arrayOfActions:addObject(matchFunc)
+		--arrayOfActions:addObject(removeFunc)
 		
-		local sequence = CCSequence:create(arrayOfActions)
-		node:runAction(sequence)
+		--local sequence = CCSequence:create(arrayOfActions)
+		node:runAction(CCCallFuncN:create(cfMatchAndFade))
 	end
 end
 
