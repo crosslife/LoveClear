@@ -32,12 +32,16 @@ local NORMAL_TAG = 10
 local SELECT_TAG = 20
 
 local isTouching = false
+local isMoving = false
 
 local touchStartPoint = {}
 local touchEndPoint = {}
 
 local touchStartCell = {}
 local touchEndCell = {}
+
+local succCellSet = {}
+local checkCellSet = {}
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()
 
@@ -111,12 +115,12 @@ local function onClickGameIcon(cell)
 	AudioEngine.playEffect("Sound/A_select.wav")
 end
 
-local function callFuncTest()
-	cclog("callFuncTest...")
-end
 
---交换相邻棋子
-local function switchCell(cellA, cellB)
+--交换相邻棋子，并执行回调函数(一般为检测是否命中)
+local function switchCell(cellA, cellB, cfCallBack)
+	cclog("switchCell...")
+	cclog("cellA.."..cellA.x.." "..cellA.y)
+	cclog("cellB.."..cellB.x.." "..cellB.y)
 	isTouching = false
 
 	resetSelectGameIcon()
@@ -130,77 +134,83 @@ local function switchCell(cellA, cellB)
 	local nodeA = scene:getChildByTag(NODE_TAG_START + tagA)
 	local nodeB = scene:getChildByTag(NODE_TAG_START + tagB)
 
-	local moveToB = CCMoveTo:create(0.1, CCPoint(cellPointB.x, cellPointB.y))
+	if nodeA == nil or nodeB == nil then
+		cclog("can't find node!!")
+	end
+
 	local moveToA = CCMoveTo:create(0.1, CCPoint(cellPointA.x, cellPointA.y))	
 
-	local function testMoveCallBack()
-		cclog("test call back")
-		local arrayOfActions = CCArray:create()			
+	--将检测的回调函数绑定在A cell上
+	local function moveAWithCallBack()
+
+		local arrayOfActions = CCArray:create()		
+			
 		local moveToB = CCMoveTo:create(0.1, CCPoint(cellPointB.x, cellPointB.y))
-		local callBack = CCCallFunc:create(callFuncTest)
-
 		arrayOfActions:addObject(moveToB)
-		arrayOfActions:addObject(callBack)
 
+		if cfCallBack ~= nil then
+			cclog("move with call back..")
+			local callBack = CCCallFunc:create(cfCallBack)
+			arrayOfActions:addObject(callBack)
+		end
+		
 		local sequence = CCSequence:create(arrayOfActions)
 		nodeA:runAction(sequence)
 	end
 
-	testMoveCallBack()
-	--nodeA:runAction(moveToB)
+	moveAWithCallBack()
 	nodeB:runAction(moveToA)
 
-	--update tag
+	--swap tag
 	nodeA:setTag(NODE_TAG_START + tagB)
 	nodeB:setTag(NODE_TAG_START + tagA)
 
-	--update gameboard
+	--swap index
 	GameBoard[cellA.x][cellA.y], GameBoard[cellB.x][cellB.y] = GameBoard[cellB.x][cellB.y], GameBoard[cellA.x][cellA.y]
-	AudioEngine.playEffect("Sound/A_combo1.wav")
-	
 end
 
---不可移动的棋子
-local function falseMoveCell(cellA, cellB)
-	isTouching = false
+--检测checkCellSet 中的格子是否命中
+local function cfCheckCell()
+	cclog("cfCheckCell...")
+	local cellA = checkCellSet[1]
+	local cellB = checkCellSet[2]
 
-	resetSelectGameIcon()
-
-	local tagA = 10 * cellA.x + cellA.y
-	local tagB = 10 * cellB.x + cellB.y
-
-	local cellPointA = getCellCenterPoint(cellA)
-	local cellPointB = getCellCenterPoint(cellB)
-
-	local nodeA = scene:getChildByTag(NODE_TAG_START + tagA)
-	local nodeB = scene:getChildByTag(NODE_TAG_START + tagB)
-
-	local function roundMove(node, nowPoint, desPoint)
-		local arrayOfActions = CCArray:create()			
-		local moveForward = CCMoveTo:create(0.1, CCPoint(desPoint.x, desPoint.y))
-		local moveBack = CCMoveTo:create(0.1, CCPoint(nowPoint.x, nowPoint.y))	
-
-		arrayOfActions:addObject(moveForward)
-		arrayOfActions:addObject(moveBack)
-
-		local sequence = CCSequence:create(arrayOfActions)
-
-		if node ~= nil then
-			node:runAction(sequence)
-		end		
+	checkCellSet[1] = nil
+	checkCellSet[2] = nil
+	if cellA == nil or cellB == nil then
+		return
 	end
 
-	roundMove(nodeA, cellPointA, cellPointB)
-	roundMove(nodeB, cellPointB, cellPointA)
-	AudioEngine.playEffect("Sound/A_falsemove.wav")
+	succCellSet = {}
+	if checkCell(cellA) then
+		succCellSet[#succCellSet + 1] = cellA
+	end
+
+	if checkCell(cellB) then
+		succCellSet[#succCellSet + 1] = cellB
+	end
+
+	if #succCellSet == 0 then
+		--匹配失败
+		cclog("switch failed...")
+		switchCell(cellA, cellB, nil)
+		AudioEngine.playEffect("Sound/A_falsemove.wav")
+	else
+		--匹配成功
+		cclog("switch success!!!")
+		AudioEngine.playEffect("Sound/A_combo1.wav")
+
+		--to do: 执行消除
+	end
+
 end
+
 
 --背景层
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
 	local backSprite = CCSprite:create("imgs/game_bg.png")
-
 	backSprite:setPosition(backSprite:getContentSize().width / 2, backSprite:getContentSize().height / 2)
 
 	backLayer:addChild(backSprite)
@@ -223,24 +233,14 @@ local function createTouchLayer()
 		touchStartCell = touchPointToCell(x, y)
 		if curSelectTag ~= nil then
 			local curSelectCell = {x = math.modf(curSelectTag / 10), y = curSelectTag % 10}
-			if (math.abs(curSelectCell.x - touchStartCell.x) == 1 and curSelectCell.y == touchStartCell.y)
-			or (math.abs(curSelectCell.y - touchStartCell.y) == 1 and curSelectCell.x == touchStartCell.x) then					
-				--模拟移动后数据
-				GameBoard[curSelectCell.x][curSelectCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[curSelectCell.x][curSelectCell.y]	
-
-				local checkRet = checkCell(touchStartCell) or checkCell(curSelectCell)
-				if checkRet == true then
-					switchCell(curSelectCell, touchStartCell)
-				else
-					falseMoveCell(curSelectCell, touchStartCell)
-				end		
-
-				--还原数据，如果发生了移动，则移动内部已经互换了数据
-				GameBoard[curSelectCell.x][curSelectCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[curSelectCell.x][curSelectCell.y]	
+			if isTwoCellNearby(curSelectCell, touchStartCell) then
+				checkCellSet = {}
+				checkCellSet[#checkCellSet + 1] = curSelectCell
+				checkCellSet[#checkCellSet + 1] = touchStartCell
+				switchCell(curSelectCell, touchStartCell, cfCheckCell)
 				return true
-			end	
+			end
 		end
-		
 
 		onClickGameIcon(touchStartCell)
 
@@ -251,22 +251,11 @@ local function createTouchLayer()
 		--cclog("touchLayerMoved: %.2f, %.2f", x, y)
 		local touchCurCell = touchPointToCell(x, y)
 		if	isTouching then
-			if touchCurCell.x ~= touchStartCell.x or touchCurCell.y ~= touchStartCell.y then
-				if (math.abs(touchCurCell.x - touchStartCell.x) == 1 and touchCurCell.y == touchStartCell.y)
-				or (math.abs(touchCurCell.y - touchStartCell.y) == 1 and touchCurCell.x == touchStartCell.x) then	
-					--模拟移动后数据
-					GameBoard[touchCurCell.x][touchCurCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[touchCurCell.x][touchCurCell.y]	
-
-					local checkRet = checkCell(touchStartCell) or checkCell(touchCurCell)
-					if checkRet == true then
-						switchCell(touchCurCell, touchStartCell)
-					else
-						falseMoveCell(touchCurCell, touchStartCell)
-					end		
-
-					--还原数据，如果发生了移动，则移动内部已经互换了数据
-					GameBoard[touchCurCell.x][touchCurCell.y], GameBoard[touchStartCell.x][touchStartCell.y] = GameBoard[touchStartCell.x][touchStartCell.y], GameBoard[touchCurCell.x][touchCurCell.y]						
-				end				
+			if isTwoCellNearby(touchCurCell, touchStartCell) then
+				checkCellSet = {}
+				checkCellSet[#checkCellSet + 1] = touchCurCell
+				checkCellSet[#checkCellSet + 1] = touchStartCell
+				switchCell(touchCurCell, touchStartCell, cfCheckCell)
 			end
 		end		
     end

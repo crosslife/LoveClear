@@ -70,6 +70,16 @@ function getCellCenterPoint(cell)
 	return point
 end
 
+--检查两个格子是否相邻
+function isTwoCellNearby(cellA, cellB)
+	local ret = false
+	if (math.abs(cellA.x - cellB.x) == 1 and cellA.y == cellB.y) or
+	   (math.abs(cellA.y - cellB.y) == 1 and cellA.x == cellB.x) then
+		ret = true
+	end	
+	return ret
+end
+
 --检查某个格子是否组成3连,根据GameBoard数据
 function checkCell(cell)
 	local x = cell.x
