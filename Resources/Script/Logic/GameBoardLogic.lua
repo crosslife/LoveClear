@@ -89,32 +89,67 @@ function checkCell(cell)
 	local index = GameBoard[x][y]
 
 	local ret = false
+	--非最优，考虑优化
 	if x > 1 and GameBoard[x-1][y] == index then
 		if (x > 2 and GameBoard[x-2][y] == index) or (x < GBoardSizeX and GameBoard[x+1][y] == index) then
-			cclog("left")
 			ret = true
 		end
 	end
 
 	if x < GBoardSizeX and GameBoard[x+1][y] == index then
 		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) or (x > 1 and GameBoard[x-1][y] == index) then
-			cclog("right")
 			ret = true
 		end
 	end
 
 	if y > 1 and GameBoard[x][y-1] == index then
 		if (y > 2 and GameBoard[x][y-2] == index) or (y < GBoardSizeY and GameBoard[x][y+1] == index) then
-			cclog("down")
 			ret = true
 		end
 	end
 
 	if y < GBoardSizeY and GameBoard[x][y+1] == index then
 		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) or (y > 1 and GameBoard[x][y-1] == index) then
-			cclog("up")
 			ret = true
 		end
 	end
 	return ret
+end
+
+--获得与某个格子同色相连的格子集合
+function getNearbyCellSet(cell)
+	local x = cell.x
+	local y = cell.y
+	local index = GameBoard[x][y]
+
+	local cellSet = {}
+	cellSet[#cellSet + 1] = {x = x, y = y}
+	if x > 1 and GameBoard[x-1][y] == index then
+		cellSet[#cellSet + 1] = {x = x-1, y = y}
+		if (x > 2 and GameBoard[x-2][y] == index) then
+			cellSet[#cellSet + 1] = {x = x-2, y = y}
+		end
+	end
+
+	if x < GBoardSizeX and GameBoard[x+1][y] == index then
+		cellSet[#cellSet + 1] = {x = x+1, y = y}
+		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) then
+			cellSet[#cellSet + 1] = {x = x+2, y = y}
+		end
+	end
+
+	if y > 1 and GameBoard[x][y-1] == index then
+		cellSet[#cellSet + 1] = {x = x, y = y-1}
+		if (y > 2 and GameBoard[x][y-2] == index) then
+			cellSet[#cellSet + 1] = {x = x, y = y-2}
+		end
+	end
+
+	if y < GBoardSizeY and GameBoard[x][y+1] == index then
+		cellSet[#cellSet + 1] = {x = x, y = y+1}
+		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) then
+			cellSet[#cellSet + 1] = {x = x, y = y+2}
+		end
+	end
+	return cellSet
 end

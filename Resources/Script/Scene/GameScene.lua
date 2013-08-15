@@ -31,6 +31,8 @@ local NODE_TAG_START = 1000
 local NORMAL_TAG = 10
 local SELECT_TAG = 20
 
+local REMOVED_TAG = 2000
+
 local isTouching = false
 local isMoving = false
 
@@ -136,6 +138,7 @@ local function switchCell(cellA, cellB, cfCallBack)
 
 	if nodeA == nil or nodeB == nil then
 		cclog("can't find node!!")
+		return
 	end
 
 	local moveToA = CCMoveTo:create(0.1, CCPoint(cellPointA.x, cellPointA.y))	
@@ -167,6 +170,40 @@ local function switchCell(cellA, cellB, cfCallBack)
 
 	--swap index
 	GameBoard[cellA.x][cellA.y], GameBoard[cellB.x][cellB.y] = GameBoard[cellB.x][cellB.y], GameBoard[cellA.x][cellA.y]
+end
+
+--移除格子回调函数
+local function cfRemoveSelf(node)
+	cclog("cf remove self")
+	if node == nil then
+		cclog("remove failed")
+	else
+		node:removeFromParentAndCleanup(true)
+	end
+end
+
+--将某个集合的格子渐隐并移除
+local function removeCellSet(cellSet)
+	for i = 1, #cellSet do
+		cclog("remove.."..cellSet[i].x.."  "..cellSet[i].y)
+		local tag = 10 * cellSet[i].x + cellSet[i].y
+		local node = scene:getChildByTag(NODE_TAG_START + tag)
+
+		--此时直接清除数据
+		node:setTag(REMOVED_TAG)
+		GameBoard[cellSet[i].x][cellSet[i].y] = 0
+
+		local arrayOfActions = CCArray:create()		
+			
+		local fade = CCScaleTo:create(0.5, 0)
+		local removeFunc = CCCallFuncN:create(cfRemoveSelf)
+
+		arrayOfActions:addObject(fade)
+		arrayOfActions:addObject(removeFunc)
+		
+		local sequence = CCSequence:create(arrayOfActions)
+		node:runAction(sequence)
+	end
 end
 
 --检测checkCellSet 中的格子是否命中
@@ -201,6 +238,16 @@ local function cfCheckCell()
 		AudioEngine.playEffect("Sound/A_combo1.wav")
 
 		--to do: 执行消除，填充棋盘
+		--获得邻近格子集合
+		local matchCellSet = {}
+		for i = 1, #succCellSet do
+			local succCell = succCellSet[i]
+			local nearbySet = getNearbyCellSet(succCell)
+			for i = 1, #nearbySet do
+				matchCellSet[#matchCellSet + 1] = nearbySet[i]
+			end
+		end
+		removeCellSet(matchCellSet)
 	end
 
 end
