@@ -21,16 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
-require "Script/Config/CommonDefine"
-
-local GameBoard = {}
-GameBoard[1] = {}
-GameBoard[2] = {}
-GameBoard[3] = {}
-GameBoard[4] = {}
-GameBoard[5] = {}
-GameBoard[6] = {}
-GameBoard[7] = {}
+require "Script/Logic/GameBoardLogic"
 
 local scene = nil
 
@@ -50,34 +41,6 @@ local touchEndCell = {}
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()
 
---触摸点转化为棋盘格子点
-local function touchPointToCell(x, y)
-	local cellX = math.modf((x - GLeftBottomOffsetX) / GCellWidth)
-	local cellY = math.modf((y - GLeftBottomOffsetY) / GCellWidth)
-	local cell = {}
-	cell.x = cellX + 1
-	cell.y = cellY + 1
-
-	if cell.x > GBoardSizeX then
-		cell.x = GBoardSizeX
-	end
-
-	if cell.y > GBoardSizeY then
-		cell.y = GBoardSizeY
-	end
-
-	return cell
-end
-
---获取某个格子的中心坐标
-local function getCellCenterPoint(cell)
-	local point = {}
-	point.x = (cell.x - 1) * GCellWidth + GLeftBottomOffsetX + GCellWidth / 2
-	point.y = (cell.y - 1) * GCellWidth + GLeftBottomOffsetY + GCellWidth / 2
-
-	return point
-end
-
 --加载游戏图标资源
 local function loadGameIcon()
 	CCSpriteFrameCache:getInstance():addSpriteFramesWithFile("imgs/GameIcon.plist")
@@ -90,18 +53,10 @@ local function getGameIconSprite(type, index)
 	return iconSprite
 end
 
---初始化棋盘
-local function initGameBoard()
-	for	x = 1, 7 do
-		for y = 1, 7 do
-			math.randomseed(math.random(os.time()))
-			GameBoard[x][y] = math.random(7)
-		end
-	end
-
+--初始化棋盘图标
+local function initGameBoardIcon()
 	for x=1, 7 do
 		for y = 1, 7 do
-
 			--每个节点创建两个sprite
 			local iconNormalSprite = getGameIconSprite(1, GameBoard[x][y])
 			local iconSelectSprite = getGameIconSprite(4, GameBoard[x][y])
@@ -218,44 +173,9 @@ local function falseMoveCell(cellA, cellB)
 	AudioEngine.playEffect("Sound/A_falsemove.wav")
 end
 
---检查某个格子是否组成3连
-local function checkCell(cell)
-	local x = cell.x
-	local y = cell.y
 
-	local index = GameBoard[x][y]
 
-	local ret = false
-	if x > 1 and GameBoard[x-1][y] == index then
-		if (x > 2 and GameBoard[x-2][y] == index) or (x < GBoardSizeX and GameBoard[x+1][y] == index) then
-			cclog("left")
-			ret = true
-		end
-	end
-
-	if x < GBoardSizeX and GameBoard[x+1][y] == index then
-		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) or (x > 1 and GameBoard[x-1][y] == index) then
-			cclog("right")
-			ret = true
-		end
-	end
-
-	if y > 1 and GameBoard[x][y-1] == index then
-		if (y > 2 and GameBoard[x][y-2] == index) or (y < GBoardSizeY and GameBoard[x][y+1] == index) then
-			cclog("down")
-			ret = true
-		end
-	end
-
-	if y < GBoardSizeY and GameBoard[x][y+1] == index then
-		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) or (y > 1 and GameBoard[x][y-1] == index) then
-			cclog("up")
-			ret = true
-		end
-	end
-	return ret
-end
-
+--背景层
 local function createBackLayer()
 	local backLayer = CCLayer:create()
 
@@ -268,6 +188,7 @@ local function createBackLayer()
 	return backLayer
 end
 
+--触摸层
 local function createTouchLayer()
 
 	local touchColor = Color4B:new(255, 255, 255 ,0)
@@ -369,6 +290,7 @@ function CreateGameScene()
 	loadGameIcon()
 
 	initGameBoard()
+	initGameBoardIcon()
 
 	scene:addChild(createTouchLayer(), 1000)
 

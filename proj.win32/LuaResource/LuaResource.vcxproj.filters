@@ -29,6 +29,9 @@
     <None Include="..\..\Resources\Script\Config\CommonDefine.lua">
       <Filter>Script\Config</Filter>
     </None>
+    <None Include="..\..\Resources\Script\Logic\GameBoardLogic.lua">
+      <Filter>Script\Logic</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Script">
@@ -42,6 +45,9 @@
     </Filter>
     <Filter Include="Script\Sprite">
       <UniqueIdentifier>{aadc28ec-a085-4b92-a5eb-401c37b26df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Logic">
+      <UniqueIdentifier>{4218b615-ac41-4de3-af20-020bc84062fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@
     <None Include="..\..\Resources\OpenglConstants.lua" />
     <None Include="..\..\Resources\Script\Config\CommonDefine.lua" />
     <None Include="..\..\Resources\Script\Config\DebugConfig.lua" />
+    <None Include="..\..\Resources\Script\Logic\GameBoardLogic.lua" />
     <None Include="..\..\Resources\Script\main.lua" />
     <None Include="..\..\Resources\Script\Scene\GameScene.lua" />
     <None Include="..\..\Resources\Script\Scene\MainMenuScene.lua" />
