@@ -37,6 +37,7 @@ local REMOVED_TAG = 2000
 
 local isTouching = false
 local isMoving = false
+local isRefreshing = false
 
 local touchStartPoint = {}
 local touchEndPoint = {}
@@ -177,6 +178,16 @@ local function cfRemoveSelf(matchSprite)
 	end
 end
 
+--匹配消除后刷新游戏面板
+local function cfRefreshBoard()
+	cclog("cfRefreshBoard..")
+	local firstEmptyCell = nil
+	local addCellList = nil
+	local moveCellList = nil
+
+	firstEmptyCell, addCellList, moveCellList = getRefreshBoardData()
+end
+
 --变为匹配图标并渐隐回调
 local function cfMatchAndFade(node)
 	if node ~= nil then
@@ -198,9 +209,11 @@ local function cfMatchAndFade(node)
 			
 			local fade = CCFadeOut:create(0.5)
 			local removeFunc = CCCallFuncN:create(cfRemoveSelf)
+			local refreshBoardFunc = CCCallFunc:create(cfRefreshBoard)
 
 			arrayOfActions:addObject(fade)
 			arrayOfActions:addObject(removeFunc)
+			arrayOfActions:addObject(refreshBoardFunc)
 		
 			local sequence = CCSequence:create(arrayOfActions)
 

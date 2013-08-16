@@ -154,3 +154,45 @@ function getNearbyCellSet(cell)
 	end
 	return cellSet
 end
+
+--根据消除后的面板计算出棋子落下相关数据
+function getRefreshBoardData()
+	
+	--记录每列中最下面的空格
+	local firstEmptyCell = {}
+
+	--记录每列所需要增加的数据
+	local addCellList = {}
+
+	--记录每列需要移动的棋子
+	local moveCellList = {}
+
+	for i = 1, GBoardSizeX do
+		for j = 1, GBoardSizeY do
+			if GameBoard[i][j] == 0 then
+				if firstEmptyCell[i] == nil then
+					firstEmptyCell[i] = {x = i, y = j}
+				end
+
+				--随机生成index并加入对应列的addList
+				math.randomseed(math.random(os.time()))
+				local addIconIndex = math.random(GGameIconCount)
+
+				if addCellList[i] == nil then
+					addCellList[i] = {}
+				end
+				addCellList[i][#(addCellList[i]) + 1] = addIconIndex
+			else
+				if moveCellList[i] == nil then
+					moveCellList[i] = {}
+				end
+				--判断是否已经检索到空节点
+				if firstEmptyCell[i] ~= nil then					
+					moveCellList[i][#(moveCellList[i]) + 1] = {x = i, y = j}
+				end
+			end
+		end
+	end
+
+	return firstEmptyCell, addCellList, moveCellList
+end
