@@ -193,12 +193,12 @@ local function cfRefreshBoard()
 	for i = 1, GBoardSizeX do
 		if firstEmptyCell[i] ~= nil then
 			cclog("firstEmptyCell.."..i..".."..firstEmptyCell[i].x..firstEmptyCell[i].y)
-			for j = 1, #(addCellList[i]) do
-				cclog("addCellList"..i..".."..addCellList[i][j])
-			end
-
 			for j = 1, #(moveCellList[i]) do
 				cclog("moveCellList"..i..".."..moveCellList[i][j].x..moveCellList[i][j].y)
+			end
+
+			for j = 1, #(addCellList[i]) do
+				cclog("addCellList"..i..".."..addCellList[i][j])
 			end
 		end		
 	end
