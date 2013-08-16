@@ -217,18 +217,9 @@ local function removeCellSet(cellSet)
 		local node = scene:getChildByTag(NODE_TAG_START + tag)
 
 		--此时直接清除数据
-		node:setTag(REMOVED_TAG)
+		node:setTag(REMOVED_TAG + tag)
 		GameBoard[cellSet[i].x][cellSet[i].y] = 0
 
-		--local arrayOfActions = CCArray:create()		
-			
-		--local matchFunc = CCCallFuncN:create(cfMatchAndFade)
-		--local removeFunc = CCCallFuncN:create(cfRemoveSelf)
-
-		--arrayOfActions:addObject(matchFunc)
-		--arrayOfActions:addObject(removeFunc)
-		
-		--local sequence = CCSequence:create(arrayOfActions)
 		node:runAction(CCCallFuncN:create(cfMatchAndFade))
 	end
 end
