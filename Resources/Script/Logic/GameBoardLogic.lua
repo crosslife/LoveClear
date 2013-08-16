@@ -23,6 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 require "Script/Config/CommonDefine"
 
+--初始棋盘所有格子index均为0
 GameBoard = {}
 for i = 1, GBoardSizeX do
 	GameBoard[i] = {}
@@ -31,7 +32,7 @@ for i = 1, GBoardSizeX do
 	end
 end
 
---初始化棋盘数据
+--随机生成初始棋盘，保证不含三连
 function initGameBoard()
 	for	x = 1, GBoardSizeX do
 		for y = 1, GBoardSizeY do
