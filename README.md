@@ -8,3 +8,9 @@
 3. Enjoy it!
 
 <img src="https://f.cloud.github.com/assets/1802419/966365/dc0e9880-0544-11e3-9cc3-112dbd40c32e.gif">
+
+TODO:
+
+1. 填充棋盘
+2. combo及分数计算
+3. 倒计时
