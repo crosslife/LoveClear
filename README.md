@@ -20,4 +20,4 @@ TODO:
 Notice:
 
 1. 请确保VS解决方案中，LoveClear项目“属性->调试->工作目录”为"$(ProjectDir)..\Resources"
-2. 本项目图片资源取材自腾讯游戏“天天爱消除”，仅供算法研究分享 <a href="http://peng.qq.com/">官方网站</a>
+2. 本项目图片资源取材自腾讯游戏<a href="http://peng.qq.com/">天天爱消除</a>，仅供算法研究分享
