@@ -7,7 +7,7 @@
 
 3. Enjoy it!
 
-<img src="https://f.cloud.github.com/assets/1802419/966365/dc0e9880-0544-11e3-9cc3-112dbd40c32e.gif">
+<img src="https://f.cloud.github.com/assets/1802419/972892/cdb7d0bc-060c-11e3-8713-4aeb7123e764.gif">
 
 TODO:
 
