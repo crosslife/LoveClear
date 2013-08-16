@@ -48,6 +48,8 @@ local touchEndCell = {}
 local succCellSet = {}
 local checkCellSet = {}
 
+local RefreshBoardNode = nil
+
 local visibleSize = CCDirector:getInstance():getVisibleSize()
 
 --初始化棋盘图标
@@ -186,6 +188,20 @@ local function cfRefreshBoard()
 	local moveCellList = nil
 
 	firstEmptyCell, addCellList, moveCellList = getRefreshBoardData()
+
+	--遍历每一列
+	for i = 1, GBoardSizeX do
+		if firstEmptyCell[i] ~= nil then
+			cclog("firstEmptyCell.."..i..".."..firstEmptyCell[i].x..firstEmptyCell[i].y)
+			for j = 1, #(addCellList[i]) do
+				cclog("addCellList"..i..".."..addCellList[i][j])
+			end
+
+			for j = 1, #(moveCellList[i]) do
+				cclog("moveCellList"..i..".."..moveCellList[i][j].x..moveCellList[i][j].y)
+			end
+		end		
+	end
 end
 
 --变为匹配图标并渐隐回调
@@ -208,12 +224,10 @@ local function cfMatchAndFade(node)
 			local arrayOfActions = CCArray:create()		
 			
 			local fade = CCFadeOut:create(0.5)
-			local removeFunc = CCCallFuncN:create(cfRemoveSelf)
-			local refreshBoardFunc = CCCallFunc:create(cfRefreshBoard)
+			local removeFunc = CCCallFuncN:create(cfRemoveSelf)			
 
 			arrayOfActions:addObject(fade)
 			arrayOfActions:addObject(removeFunc)
-			arrayOfActions:addObject(refreshBoardFunc)
 		
 			local sequence = CCSequence:create(arrayOfActions)
 
@@ -279,6 +293,19 @@ local function cfCheckCell()
 			end
 		end
 		removeCellSet(matchCellSet)
+
+		--延迟一段时间后刷新棋盘
+		local arrayOfActions = CCArray:create()		
+			
+		local delay = CCDelayTime:create(5)
+		local refreshBoardFunc = CCCallFunc:create(cfRefreshBoard)	
+
+		arrayOfActions:addObject(delay)
+		arrayOfActions:addObject(refreshBoardFunc)
+		
+		local sequence = CCSequence:create(arrayOfActions)
+
+		RefreshBoardNode:runAction(sequence)
 	end
 
 end
@@ -380,6 +407,11 @@ function CreateGameScene()
 	initGameBoardIcon()
 
 	scene:addChild(createTouchLayer(), 1000)
+
+	--创建用于延迟执行刷新棋盘函数的节点
+	RefreshBoardNode = CCNode:create()
+	scene:addChild(RefreshBoardNode)
+
 
     return scene
 end
