@@ -52,7 +52,9 @@ local checkCellSet = {}
 --用于存储执行交换结点
 local switchCellSet = {}
 
+--执行各种函数的辅助node
 local RefreshBoardNode = nil
+local FallEndCheckNode = nil
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()
 
@@ -196,6 +198,53 @@ local function cfRemoveSelf(matchSprite)
 	end
 end
 
+--变为匹配图标并渐隐回调
+local function cfMatchAndFade(node)
+	if node ~= nil then
+		local normalSprite = node:getChildByTag(NORMAL_TAG)
+		local matchSprite = node:getChildByTag(MATCH_TAG)
+		local selectSprite = node:getChildByTag(SELECT_TAG)
+		if normalSprite ~= nil then 
+			normalSprite:setVisible(false)
+		end 
+
+		if selectSprite ~= nil then
+			selectSprite:setVisible(false)
+		end
+
+		if matchSprite ~= nil then
+			matchSprite:setVisible(true)
+
+			local arrayOfActions = CCArray:create()		
+			
+			local fade = CCFadeOut:create(0.2)
+			local removeFunc = CCCallFuncN:create(cfRemoveSelf)			
+
+			arrayOfActions:addObject(fade)
+			arrayOfActions:addObject(removeFunc)
+		
+			local sequence = CCSequence:create(arrayOfActions)
+
+			matchSprite:runAction(sequence)
+		end
+	end
+end
+
+--将某个集合的格子渐隐并移除
+local function removeCellSet(cellSet)
+	for i = 1, #cellSet do
+		cclog("remove.."..cellSet[i].x.."  "..cellSet[i].y)
+		local tag = 10 * cellSet[i].x + cellSet[i].y
+		local node = scene:getChildByTag(NODE_TAG_START + tag)
+
+		--此时直接清除数据
+		node:setTag(REMOVED_TAG + tag)
+		GameBoard[cellSet[i].x][cellSet[i].y] = 0
+
+		node:runAction(CCCallFuncN:create(cfMatchAndFade))
+	end
+end
+
 --匹配消除后刷新游戏面板
 local function cfRefreshBoard()
 	cclog("cfRefreshBoard..")
@@ -287,57 +336,14 @@ local function cfRefreshBoard()
 	end
 
 	actionNodeList = {}
+
+	--下落后检查是否有新的命中
+	--FallEndCheckNode
 end
 
---变为匹配图标并渐隐回调
-local function cfMatchAndFade(node)
-	if node ~= nil then
-		local normalSprite = node:getChildByTag(NORMAL_TAG)
-		local matchSprite = node:getChildByTag(MATCH_TAG)
-		local selectSprite = node:getChildByTag(SELECT_TAG)
-		if normalSprite ~= nil then 
-			normalSprite:setVisible(false)
-		end 
-
-		if selectSprite ~= nil then
-			selectSprite:setVisible(false)
-		end
-
-		if matchSprite ~= nil then
-			matchSprite:setVisible(true)
-
-			local arrayOfActions = CCArray:create()		
-			
-			local fade = CCFadeOut:create(0.2)
-			local removeFunc = CCCallFuncN:create(cfRemoveSelf)			
-
-			arrayOfActions:addObject(fade)
-			arrayOfActions:addObject(removeFunc)
-		
-			local sequence = CCSequence:create(arrayOfActions)
-
-			matchSprite:runAction(sequence)
-		end
-	end
-end
-
---将某个集合的格子渐隐并移除
-local function removeCellSet(cellSet)
-	for i = 1, #cellSet do
-		cclog("remove.."..cellSet[i].x.."  "..cellSet[i].y)
-		local tag = 10 * cellSet[i].x + cellSet[i].y
-		local node = scene:getChildByTag(NODE_TAG_START + tag)
-
-		--此时直接清除数据
-		node:setTag(REMOVED_TAG + tag)
-		GameBoard[cellSet[i].x][cellSet[i].y] = 0
-
-		node:runAction(CCCallFuncN:create(cfMatchAndFade))
-	end
-end
 
 --检测checkCellSet 中的格子是否命中
-local function cfCheckCell()
+function cfCheckCell()
 	cclog("cfCheckCell...")
 
 	--复制为局部变量
@@ -396,7 +402,7 @@ local function cfCheckCell()
 		--延迟一段时间后刷新棋盘
 		local arrayOfActions = CCArray:create()		
 			
-		local delay = CCDelayTime:create(0.5)
+		local delay = CCDelayTime:create(0.2)
 		local refreshBoardFunc = CCCallFunc:create(cfRefreshBoard)	
 
 		arrayOfActions:addObject(delay)
@@ -406,8 +412,14 @@ local function cfCheckCell()
 
 		RefreshBoardNode:runAction(sequence)
 	end
-
 end
+
+
+
+
+
+
+
 
 
 --背景层
@@ -518,6 +530,8 @@ function CreateGameScene()
 	RefreshBoardNode = CCNode:create()
 	scene:addChild(RefreshBoardNode)
 
+	FallEndCheckNode = CCNode:create()
+	scene:addChild(FallEndCheckNode)
 
     return scene
 end
