@@ -8,11 +8,11 @@
 3. Enjoy it!
 
 4. 最新效果图
-<img src="https://f.cloud.github.com/assets/1802419/972892/cdb7d0bc-060c-11e3-8713-4aeb7123e764.gif">
+<img src="https://f.cloud.github.com/assets/1802419/981148/9c8f04b4-0748-11e3-8dbb-287c6ee8299c.gif">
 
 TODO:
 
-1. 填充棋盘
+1. 多个消除玩法
 2. combo及分数计算
 3. 倒计时
 4. 屏幕分辨率自适应
