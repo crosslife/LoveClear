@@ -47,10 +47,11 @@ local touchStartCell = {}
 local touchEndCell = {}
 
 local succCellSet = {}
-local checkCellSet = {}
+local switchCellSet = {}
+local fallCellSet = {}
 
 --用于存储执行交换结点
-local switchCellSet = {}
+local switchCellPair = {}
 
 --执行各种函数的辅助node
 local RefreshBoardNode = nil
@@ -333,27 +334,109 @@ local function cfRefreshBoard()
 		local sequence = CCSequence:create(arrayOfActions)
 
 		node:runAction(sequence)
+
+		--加入下落完成检测集合
+		fallCellSet[#fallCellSet + 1] = desCell
 	end
 
 	actionNodeList = {}
 
 	--下落后检查是否有新的命中
 	--FallEndCheckNode
+	local arrayOfActions = CCArray:create()		
+			
+	local delay = CCDelayTime:create(0.2)
+	local fallCheckFunc = CCCallFunc:create(cfCheckFallCell)			
+
+	arrayOfActions:addObject(delay)
+	arrayOfActions:addObject(fallCheckFunc)
+		
+	local sequence = CCSequence:create(arrayOfActions)
+
+	FallEndCheckNode:runAction(sequence)
 end
 
+local function onCheckSuccess(succCellSet)
+	if #succCellSet == 0 then
+		return
+	end
 
---检测checkCellSet 中的格子是否命中
-function cfCheckCell()
-	cclog("cfCheckCell...")
+	--匹配成功
+	cclog("switch success!!!")
+	AudioEngine.playEffect("Sound/A_combo1.wav")
+
+	--to do: 执行消除，填充棋盘
+	--获得邻近格子集合
+	local matchCellSet = {}
+
+	--用于检测是否已加入
+	local assSet = {}
+	for i = 1, #succCellSet do
+		local succCell = succCellSet[i]
+		local nearbySet = getNearbyCellSet(succCell)
+		for i = 1, #nearbySet do
+			local cell = nearbySet[i]
+			if assSet[10 * cell.x + cell.y] == nil then
+				assSet[10 * cell.x + cell.y] = true
+				matchCellSet[#matchCellSet + 1] = cell
+			end				
+		end
+	end
+	removeCellSet(matchCellSet)
+
+	--延迟一段时间后刷新棋盘
+	local arrayOfActions = CCArray:create()		
+			
+	local delay = CCDelayTime:create(0.2)
+	local refreshBoardFunc = CCCallFunc:create(cfRefreshBoard)	
+
+	arrayOfActions:addObject(delay)
+	arrayOfActions:addObject(refreshBoardFunc)
+		
+	local sequence = CCSequence:create(arrayOfActions)
+
+	RefreshBoardNode:runAction(sequence)
+
+end
+
+--检测落下的棋子是否命中
+function cfCheckFallCell()
+	cclog("cfCheckFallCell...")
 
 	--复制为局部变量
 	local checkSet = {}
-	for i = 1, #checkCellSet do
-		checkSet[#checkSet + 1] = checkCellSet[i]
+	for i = 1, #fallCellSet do
+		checkSet[#checkSet + 1] = fallCellSet[i]
 	end
 
 	--重置全局table
-	checkCellSet = {}
+	switchCellSet = {}
+
+	--匹配成功的格子点
+	succCellSet = {}
+	for i = 1, #checkSet do
+		if checkCell(checkSet[i]) then
+			succCellSet[#succCellSet + 1] = checkSet[i]
+		end
+	end
+
+	if #succCellSet ~= 0 then
+		onCheckSuccess(succCellSet)
+	end	
+end
+
+--检测互相交换的两个格子是否命中
+function cfCheckSwitchCell()
+	cclog("cfCheckSwitchCell...")
+
+	--复制为局部变量
+	local checkSet = {}
+	for i = 1, #switchCellSet do
+		checkSet[#checkSet + 1] = switchCellSet[i]
+	end
+
+	--重置全局table
+	switchCellSet = {}
 
 	if #checkSet < 2 then
 		return
@@ -372,55 +455,14 @@ function cfCheckCell()
 		cclog("switch failed...")
 
 		--还原移动并清空交换区
-		switchCell(switchCellSet[1], switchCellSet[2], nil)
-		switchCellSet = {}
+		switchCell(switchCellPair[1], switchCellPair[2], nil)
+		switchCellPair = {}
+	
 		AudioEngine.playEffect("Sound/A_falsemove.wav")
 	else
-		--匹配成功
-		cclog("switch success!!!")
-		AudioEngine.playEffect("Sound/A_combo1.wav")
-
-		--to do: 执行消除，填充棋盘
-		--获得邻近格子集合
-		local matchCellSet = {}
-
-		--用于检测是否已加入
-		local assSet = {}
-		for i = 1, #succCellSet do
-			local succCell = succCellSet[i]
-			local nearbySet = getNearbyCellSet(succCell)
-			for i = 1, #nearbySet do
-				local cell = nearbySet[i]
-				if assSet[10 * cell.x + cell.y] == nil then
-					assSet[10 * cell.x + cell.y] = true
-					matchCellSet[#matchCellSet + 1] = cell
-				end				
-			end
-		end
-		removeCellSet(matchCellSet)
-
-		--延迟一段时间后刷新棋盘
-		local arrayOfActions = CCArray:create()		
-			
-		local delay = CCDelayTime:create(0.2)
-		local refreshBoardFunc = CCCallFunc:create(cfRefreshBoard)	
-
-		arrayOfActions:addObject(delay)
-		arrayOfActions:addObject(refreshBoardFunc)
-		
-		local sequence = CCSequence:create(arrayOfActions)
-
-		RefreshBoardNode:runAction(sequence)
+		onCheckSuccess(succCellSet)
 	end
 end
-
-
-
-
-
-
-
-
 
 --背景层
 local function createBackLayer()
@@ -450,13 +492,13 @@ local function createTouchLayer()
 		if curSelectTag ~= nil then
 			local curSelectCell = {x = math.modf(curSelectTag / 10), y = curSelectTag % 10}
 			if isTwoCellNearby(curSelectCell, touchStartCell) then
-				checkCellSet = {}
-				checkCellSet[#checkCellSet + 1] = curSelectCell
-				checkCellSet[#checkCellSet + 1] = touchStartCell
+				switchCellSet = {}
+				switchCellSet[#switchCellSet + 1] = curSelectCell
+				switchCellSet[#switchCellSet + 1] = touchStartCell
 
-				switchCellSet[1] = curSelectCell
-				switchCellSet[2] = touchStartCell
-				switchCell(curSelectCell, touchStartCell, cfCheckCell)
+				switchCellPair[1] = curSelectCell
+				switchCellPair[2] = touchStartCell
+				switchCell(curSelectCell, touchStartCell, cfCheckSwitchCell)
 
 				return true
 			end
@@ -472,13 +514,13 @@ local function createTouchLayer()
 		local touchCurCell = touchPointToCell(x, y)
 		if	isTouching then
 			if isTwoCellNearby(touchCurCell, touchStartCell) then
-				checkCellSet = {}
-				checkCellSet[#checkCellSet + 1] = touchCurCell
-				checkCellSet[#checkCellSet + 1] = touchStartCell
+				switchCellSet = {}
+				switchCellSet[#switchCellSet + 1] = touchCurCell
+				switchCellSet[#switchCellSet + 1] = touchStartCell
 
-				switchCellSet[1] = touchCurCell
-				switchCellSet[2] = touchStartCell
-				switchCell(touchCurCell, touchStartCell, cfCheckCell)
+				switchCellPair[1] = touchCurCell
+				switchCellPair[2] = touchStartCell
+				switchCell(touchCurCell, touchStartCell, cfCheckSwitchCell)
 			end
 		end		
     end

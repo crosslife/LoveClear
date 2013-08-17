@@ -125,31 +125,52 @@ function getNearbyCellSet(cell)
 
 	local cellSet = {}
 	cellSet[#cellSet + 1] = {x = x, y = y}
-	if x > 1 and GameBoard[x-1][y] == index then
-		cellSet[#cellSet + 1] = {x = x-1, y = y}
+
+	local assArray = {}
+	local function addCellToSet(cell)
+		if assArray[10 * cell.x + cell.y] == nil then
+			cellSet[#cellSet + 1] = cell
+			assArray[10 * cell.x + cell.y] = true
+		end
+	end
+
+	if x > 1 and GameBoard[x-1][y] == index then		
 		if (x > 2 and GameBoard[x-2][y] == index) then
-			cellSet[#cellSet + 1] = {x = x-2, y = y}
+			addCellToSet({x = x-1, y = y})
+			addCellToSet({x = x-2, y = y})
+		elseif x < GBoardSizeX and GameBoard[x+1][y] == index then
+			addCellToSet({x = x-1, y = y})
+			addCellToSet({x = x+1, y = y})
 		end
 	end
 
-	if x < GBoardSizeX and GameBoard[x+1][y] == index then
-		cellSet[#cellSet + 1] = {x = x+1, y = y}
+	if x < GBoardSizeX and GameBoard[x+1][y] == index then		
 		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) then
-			cellSet[#cellSet + 1] = {x = x+2, y = y}
+			addCellToSet({x = x+1, y = y})
+			addCellToSet({x = x+2, y = y})
+		elseif x > 1 and GameBoard[x-1][y] == index then
+			addCellToSet({x = x+1, y = y})
+			addCellToSet({x = x-1, y = y})
 		end
 	end
 
-	if y > 1 and GameBoard[x][y-1] == index then
-		cellSet[#cellSet + 1] = {x = x, y = y-1}
+	if y > 1 and GameBoard[x][y-1] == index then		
 		if (y > 2 and GameBoard[x][y-2] == index) then
-			cellSet[#cellSet + 1] = {x = x, y = y-2}
+			addCellToSet({x = x, y = y-1})
+			addCellToSet({x = x, y = y-2})
+		elseif y < GBoardSizeY and GameBoard[x][y+1] == index then
+			addCellToSet({x = x, y = y-1})
+			addCellToSet({x = x, y = y+1})
 		end
 	end
 
-	if y < GBoardSizeY and GameBoard[x][y+1] == index then
-		cellSet[#cellSet + 1] = {x = x, y = y+1}
+	if y < GBoardSizeY and GameBoard[x][y+1] == index then		
 		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) then
-			cellSet[#cellSet + 1] = {x = x, y = y+2}
+			addCellToSet({x = x, y = y+1})
+			addCellToSet({x = x, y = y+2})
+		elseif y > 1 and GameBoard[x][y-1] == index then
+			addCellToSet({x = x, y = y+1})
+			addCellToSet({x = x, y = y-1})		
 		end
 	end
 	return cellSet
