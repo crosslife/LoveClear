@@ -28,12 +28,13 @@ local scene = nil
 
 local curSelectTag = nil
 
-local NODE_TAG_START = 1000
+local NODE_TAG_START = 10000
 local NORMAL_TAG = 10
 local MATCH_TAG = 30
 local SELECT_TAG = 40
 
-local REMOVED_TAG = 2000
+local REMOVED_TAG = 20000
+local FALLING_TAG = 30000
 
 local isTouching = false
 local isMoving = false
@@ -48,37 +49,52 @@ local touchEndCell = {}
 local succCellSet = {}
 local checkCellSet = {}
 
+--用于存储执行交换结点
+local switchCellSet = {}
+
 local RefreshBoardNode = nil
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()
+
+--根据index创建某类型结点，不包含额外信息
+local function createNodeByIndex(index)
+	local iconNormalSprite = getGameIconSprite(GIconNormalType, index)
+	local iconMatchSprite = getGameIconSprite(GIconMatchType, index)
+	local iconSelectSprite = getGameIconSprite(GIconSelectType, index)
+
+	iconNormalSprite:setTag(NORMAL_TAG)
+	iconMatchSprite:setTag(MATCH_TAG)
+	iconSelectSprite:setTag(SELECT_TAG)
+
+	iconMatchSprite:setVisible(false)
+	iconSelectSprite:setVisible(false)
+
+	local iconNode = CCNode:create()
+	iconNode:addChild(iconNormalSprite)
+	iconNode:addChild(iconMatchSprite)
+	iconNode:addChild(iconSelectSprite)
+
+	return iconNode
+end
+
+--创建某个位置上的结点图标
+local function createNodeByCell(cell)
+	local index = GameBoard[cell.x][cell.y]
+	local iconNode = createNodeByIndex(index)
+
+	iconNode:setTag(NODE_TAG_START + 10 * cell.x + cell.y)
+
+	local cellPoint = getCellCenterPoint(cell)
+	iconNode:setPosition(CCPoint(cellPoint.x, cellPoint.y))
+
+	return iconNode
+end
 
 --初始化棋盘图标
 local function initGameBoardIcon()
 	for x=1, GBoardSizeX do
 		for y = 1, GBoardSizeY do
-			--每个节点创建两个sprite
-			local iconNormalSprite = getGameIconSprite(GIconNormalType, GameBoard[x][y])
-			local iconMatchSprite = getGameIconSprite(GIconMatchType, GameBoard[x][y])
-			local iconSelectSprite = getGameIconSprite(GIconSelectType, GameBoard[x][y])
-
-			local cell = {x = x, y = y}
-			local cellPoint = getCellCenterPoint(cell)
-
-			iconNormalSprite:setTag(NORMAL_TAG)
-			iconMatchSprite:setTag(MATCH_TAG)
-			iconSelectSprite:setTag(SELECT_TAG)
-
-			iconMatchSprite:setVisible(false)
-			iconSelectSprite:setVisible(false)
-
-			local iconNode = CCNode:create()
-			iconNode:setTag(NODE_TAG_START + 10 * x + y)
-
-			iconNode:addChild(iconNormalSprite)
-			iconNode:addChild(iconMatchSprite)
-			iconNode:addChild(iconSelectSprite)
-			iconNode:setPosition(CCPoint(cellPoint.x, cellPoint.y))
-
+			local iconNode = createNodeByCell({x = x, y = y})
 			scene:addChild(iconNode)
 		end
 	end
@@ -189,19 +205,88 @@ local function cfRefreshBoard()
 
 	firstEmptyCell, addCellList, moveCellList = getRefreshBoardData()
 
+	local actionNodeList = {}
 	--遍历每一列
 	for i = 1, GBoardSizeX do
 		if firstEmptyCell[i] ~= nil then
 			cclog("firstEmptyCell.."..i..".."..firstEmptyCell[i].x..firstEmptyCell[i].y)
+			local nextDesCell = {x = firstEmptyCell[i].x, y = firstEmptyCell[i].y}
 			for j = 1, #(moveCellList[i]) do
-				cclog("moveCellList"..i..".."..moveCellList[i][j].x..moveCellList[i][j].y)
+				
+				local cell = {x = moveCellList[i][j].x, y = moveCellList[i][j].y}
+				cclog("moveCellList"..i..".."..cell.x..cell.y)
+				local tag = 10 * cell.x + cell.y
+				local node = scene:getChildByTag(NODE_TAG_START + tag)
+
+				local desTag = 100 * GameBoard[cell.x][cell.y] + 10 * nextDesCell.x + nextDesCell.y
+				node:setTag(FALLING_TAG + desTag)
+
+				actionNodeList[#actionNodeList + 1] = {}
+				actionNodeList[#actionNodeList][1] = node
+				actionNodeList[#actionNodeList][2] = nextDesCell
+				nextDesCell = {x = nextDesCell.x, y = nextDesCell.y + 1}
+				--local desCell = 
 			end
 
 			for j = 1, #(addCellList[i]) do
 				cclog("addCellList"..i..".."..addCellList[i][j])
+
+				local node = createNodeByIndex(addCellList[i][j])
+				local bornPoint = getCellCenterPoint({x = i, y = 10})
+				
+				node:setPosition(CCPoint(bornPoint.x, bornPoint.y))
+
+				--新加的结点tag中包含自己的index信息
+				local desTag = 100 * addCellList[i][j] + 10 * nextDesCell.x + nextDesCell.y
+				node:setTag(FALLING_TAG + desTag)
+				scene:addChild(node)
+
+				actionNodeList[#actionNodeList + 1] = {}
+				actionNodeList[#actionNodeList][1] = node
+				actionNodeList[#actionNodeList][2] = nextDesCell
+				nextDesCell = {x = nextDesCell.x, y = nextDesCell.y + 1}
 			end
 		end		
 	end
+
+	--移动完毕后的回调函数
+	local function cfOnFallDownEnd(node)
+		cclog("fall down end...")
+		local tag = node:getTag() - FALLING_TAG
+		cclog("tag.."..tag)
+		local index = math.modf(tag / 100)
+
+		--提取并去除index信息
+		tag = tag - index * 100
+		local x = math.modf(tag / 10)
+		local y = tag % 10
+
+		GameBoard[x][y] = index
+		cclog("nowTag.."..tag)
+		node:setTag(NODE_TAG_START + tag)
+	end
+
+	--执行下落到棋盘操作
+	for i = 1, #actionNodeList do
+		local node = actionNodeList[i][1]
+		local desCell = actionNodeList[i][2]
+		local desPos = getCellCenterPoint(desCell)
+		local desPoint = CCPoint(desPos.x, desPos.y)
+
+		local arrayOfActions = CCArray:create()		
+			
+		local move = CCMoveTo:create(0.1, desPoint)
+		local fallDownEndFunc = CCCallFuncN:create(cfOnFallDownEnd)			
+
+		arrayOfActions:addObject(move)
+		arrayOfActions:addObject(fallDownEndFunc)
+		
+		local sequence = CCSequence:create(arrayOfActions)
+
+		node:runAction(sequence)
+	end
+
+	actionNodeList = {}
 end
 
 --变为匹配图标并渐隐回调
@@ -223,7 +308,7 @@ local function cfMatchAndFade(node)
 
 			local arrayOfActions = CCArray:create()		
 			
-			local fade = CCFadeOut:create(0.5)
+			local fade = CCFadeOut:create(0.2)
 			local removeFunc = CCCallFuncN:create(cfRemoveSelf)			
 
 			arrayOfActions:addObject(fade)
@@ -254,28 +339,35 @@ end
 --检测checkCellSet 中的格子是否命中
 local function cfCheckCell()
 	cclog("cfCheckCell...")
-	local cellA = checkCellSet[1]
-	local cellB = checkCellSet[2]
 
-	checkCellSet[1] = nil
-	checkCellSet[2] = nil
-	if cellA == nil or cellB == nil then
+	--复制为局部变量
+	local checkSet = {}
+	for i = 1, #checkCellSet do
+		checkSet[#checkSet + 1] = checkCellSet[i]
+	end
+
+	--重置全局table
+	checkCellSet = {}
+
+	if #checkSet < 2 then
 		return
 	end
 
+	--匹配成功的格子点
 	succCellSet = {}
-	if checkCell(cellA) then
-		succCellSet[#succCellSet + 1] = cellA
-	end
-
-	if checkCell(cellB) then
-		succCellSet[#succCellSet + 1] = cellB
+	for i = 1, #checkSet do
+		if checkCell(checkSet[i]) then
+			succCellSet[#succCellSet + 1] = checkSet[i]
+		end
 	end
 
 	if #succCellSet == 0 then
 		--匹配失败
 		cclog("switch failed...")
-		switchCell(cellA, cellB, nil)
+
+		--还原移动并清空交换区
+		switchCell(switchCellSet[1], switchCellSet[2], nil)
+		switchCellSet = {}
 		AudioEngine.playEffect("Sound/A_falsemove.wav")
 	else
 		--匹配成功
@@ -285,11 +377,18 @@ local function cfCheckCell()
 		--to do: 执行消除，填充棋盘
 		--获得邻近格子集合
 		local matchCellSet = {}
+
+		--用于检测是否已加入
+		local assSet = {}
 		for i = 1, #succCellSet do
 			local succCell = succCellSet[i]
 			local nearbySet = getNearbyCellSet(succCell)
 			for i = 1, #nearbySet do
-				matchCellSet[#matchCellSet + 1] = nearbySet[i]
+				local cell = nearbySet[i]
+				if assSet[10 * cell.x + cell.y] == nil then
+					assSet[10 * cell.x + cell.y] = true
+					matchCellSet[#matchCellSet + 1] = cell
+				end				
 			end
 		end
 		removeCellSet(matchCellSet)
@@ -297,7 +396,7 @@ local function cfCheckCell()
 		--延迟一段时间后刷新棋盘
 		local arrayOfActions = CCArray:create()		
 			
-		local delay = CCDelayTime:create(5)
+		local delay = CCDelayTime:create(0.5)
 		local refreshBoardFunc = CCCallFunc:create(cfRefreshBoard)	
 
 		arrayOfActions:addObject(delay)
@@ -342,7 +441,11 @@ local function createTouchLayer()
 				checkCellSet = {}
 				checkCellSet[#checkCellSet + 1] = curSelectCell
 				checkCellSet[#checkCellSet + 1] = touchStartCell
+
+				switchCellSet[1] = curSelectCell
+				switchCellSet[2] = touchStartCell
 				switchCell(curSelectCell, touchStartCell, cfCheckCell)
+
 				return true
 			end
 		end
@@ -360,6 +463,9 @@ local function createTouchLayer()
 				checkCellSet = {}
 				checkCellSet[#checkCellSet + 1] = touchCurCell
 				checkCellSet[#checkCellSet + 1] = touchStartCell
+
+				switchCellSet[1] = touchCurCell
+				switchCellSet[2] = touchStartCell
 				switchCell(touchCurCell, touchStartCell, cfCheckCell)
 			end
 		end		
