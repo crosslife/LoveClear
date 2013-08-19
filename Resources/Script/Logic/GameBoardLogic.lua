@@ -90,30 +90,22 @@ function checkCell(cell)
 	local index = GameBoard[x][y]
 
 	local ret = false
-	--非最优，考虑优化
-	if x > 1 and GameBoard[x-1][y] == index then
-		if (x > 2 and GameBoard[x-2][y] == index) or (x < GBoardSizeX and GameBoard[x+1][y] == index) then
-			ret = true
-		end
+
+	local cond = {}
+	cond[1] = x > 1 and GameBoard[x-1][y] == index
+	cond[2] = x > 2 and GameBoard[x-2][y] == index
+	cond[3] = x < GBoardSizeX and GameBoard[x+1][y] == index
+	cond[4] = x < GBoardSizeX-1 and GameBoard[x+2][y] == index
+	cond[5] = y > 1 and GameBoard[x][y-1] == index
+	cond[6] = y > 2 and GameBoard[x][y-2] == index
+	cond[7] = y < GBoardSizeY and GameBoard[x][y+1] == index
+	cond[8] = y < GBoardSizeY-1 and GameBoard[x][y+2] == index
+
+	if (cond[1] and cond[2]) or (cond[1] and cond[3]) or (cond[3] and cond[4]) or
+	    (cond[5] and cond[6]) or (cond[5] and cond[7]) or (cond[7] and cond[8]) then
+		ret = true
 	end
 
-	if x < GBoardSizeX and GameBoard[x+1][y] == index then
-		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) or (x > 1 and GameBoard[x-1][y] == index) then
-			ret = true
-		end
-	end
-
-	if y > 1 and GameBoard[x][y-1] == index then
-		if (y > 2 and GameBoard[x][y-2] == index) or (y < GBoardSizeY and GameBoard[x][y+1] == index) then
-			ret = true
-		end
-	end
-
-	if y < GBoardSizeY and GameBoard[x][y+1] == index then
-		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) or (y > 1 and GameBoard[x][y-1] == index) then
-			ret = true
-		end
-	end
 	return ret
 end
 
