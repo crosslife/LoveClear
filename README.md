@@ -12,12 +12,14 @@
 
 TODO:
 
-1. 多个消除玩法
-2. combo及分数计算
-3. 倒计时
-4. 屏幕分辨率自适应
+1. 保证可消除性
+2. 多个消除玩法
+3. combo及分数计算
+4. 倒计时
+5. 屏幕分辨率自适应
 
 Notice:
 
 1. 请确保VS解决方案中，LoveClear项目“属性->调试->工作目录”为"$(ProjectDir)..\Resources"
 2. 本项目图片资源取材自腾讯游戏<a href="http://peng.qq.com/">天天爱消除</a>，仅供算法研究分享
+3. 有问题或建议请邮件 hustgeziyang@gmail.com
