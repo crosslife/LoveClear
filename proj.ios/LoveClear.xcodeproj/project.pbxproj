@@ -29,14 +29,9 @@
 		1AF4C3F51786633E00122817 /* libCocosDenshion iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AF4C3E31786631700122817 /* libCocosDenshion iOS.a */; };
 		1AF4C3F61786633E00122817 /* libluabindings iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AF4C3E71786631700122817 /* libluabindings iOS.a */; };
 		1AF4C403178663F200122817 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AF4C402178663F200122817 /* libz.dylib */; };
-		A536D36C17C228D8007FBC12 /* CommonDefine.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36117C228D8007FBC12 /* CommonDefine.lua */; };
-		A536D36D17C228D8007FBC12 /* DebugConfig.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36217C228D8007FBC12 /* DebugConfig.lua */; };
-		A536D36E17C228D8007FBC12 /* GameBoardLogic.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36417C228D8007FBC12 /* GameBoardLogic.lua */; };
-		A536D36F17C228D8007FBC12 /* main.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36517C228D8007FBC12 /* main.lua */; };
-		A536D37017C228D8007FBC12 /* GameScene.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36717C228D8007FBC12 /* GameScene.lua */; };
-		A536D37117C228D8007FBC12 /* MainMenuScene.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36817C228D8007FBC12 /* MainMenuScene.lua */; };
-		A536D37217C228D8007FBC12 /* SplashScene.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36917C228D8007FBC12 /* SplashScene.lua */; };
-		A536D37317C228D8007FBC12 /* GameIcon.lua in Resources */ = {isa = PBXBuildFile; fileRef = A536D36B17C228D8007FBC12 /* GameIcon.lua */; };
+		A57B930C17C23D9F00FCC709 /* imgs in Resources */ = {isa = PBXBuildFile; fileRef = A57B930917C23D9F00FCC709 /* imgs */; };
+		A57B930D17C23D9F00FCC709 /* Script in Resources */ = {isa = PBXBuildFile; fileRef = A57B930A17C23D9F00FCC709 /* Script */; };
+		A57B930E17C23D9F00FCC709 /* Sound in Resources */ = {isa = PBXBuildFile; fileRef = A57B930B17C23D9F00FCC709 /* Sound */; };
 		F293B3CD15EB7BE500256477 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3CC15EB7BE500256477 /* QuartzCore.framework */; };
 		F293B3CF15EB7BE500256477 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3CE15EB7BE500256477 /* OpenGLES.framework */; };
 		F293B3D115EB7BE500256477 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3D015EB7BE500256477 /* OpenAL.framework */; };
@@ -206,15 +201,10 @@
 		1AC3622916D47C5C000847F2 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = ../Resources/fonts; sourceTree = "<group>"; };
 		1AF4C3B91786631600122817 /* cocos2d_libs.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cocos2d_libs.xcodeproj; path = ../../../cocos2d_libs.xcodeproj; sourceTree = "<group>"; };
 		1AF4C402178663F200122817 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		A536D36117C228D8007FBC12 /* CommonDefine.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommonDefine.lua; sourceTree = "<group>"; };
-		A536D36217C228D8007FBC12 /* DebugConfig.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DebugConfig.lua; sourceTree = "<group>"; };
-		A536D36417C228D8007FBC12 /* GameBoardLogic.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GameBoardLogic.lua; sourceTree = "<group>"; };
-		A536D36517C228D8007FBC12 /* main.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.lua; sourceTree = "<group>"; };
-		A536D36717C228D8007FBC12 /* GameScene.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GameScene.lua; sourceTree = "<group>"; };
-		A536D36817C228D8007FBC12 /* MainMenuScene.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MainMenuScene.lua; sourceTree = "<group>"; };
-		A536D36917C228D8007FBC12 /* SplashScene.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SplashScene.lua; sourceTree = "<group>"; };
-		A536D36B17C228D8007FBC12 /* GameIcon.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GameIcon.lua; sourceTree = "<group>"; };
-		F293B3C815EB7BE500256477 /* MyGitGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyGitGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A57B930917C23D9F00FCC709 /* imgs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = imgs; sourceTree = "<group>"; };
+		A57B930A17C23D9F00FCC709 /* Script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Script; sourceTree = "<group>"; };
+		A57B930B17C23D9F00FCC709 /* Sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sound; sourceTree = "<group>"; };
+		F293B3C815EB7BE500256477 /* LoveClear.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LoveClear.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F293B3CC15EB7BE500256477 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		F293B3CE15EB7BE500256477 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		F293B3D015EB7BE500256477 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
@@ -293,53 +283,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A536D35F17C228D8007FBC12 /* Script */ = {
-			isa = PBXGroup;
-			children = (
-				A536D36017C228D8007FBC12 /* Config */,
-				A536D36317C228D8007FBC12 /* Logic */,
-				A536D36517C228D8007FBC12 /* main.lua */,
-				A536D36617C228D8007FBC12 /* Scene */,
-				A536D36A17C228D8007FBC12 /* Sprite */,
-			);
-			path = Script;
-			sourceTree = "<group>";
-		};
-		A536D36017C228D8007FBC12 /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				A536D36117C228D8007FBC12 /* CommonDefine.lua */,
-				A536D36217C228D8007FBC12 /* DebugConfig.lua */,
-			);
-			path = Config;
-			sourceTree = "<group>";
-		};
-		A536D36317C228D8007FBC12 /* Logic */ = {
-			isa = PBXGroup;
-			children = (
-				A536D36417C228D8007FBC12 /* GameBoardLogic.lua */,
-			);
-			path = Logic;
-			sourceTree = "<group>";
-		};
-		A536D36617C228D8007FBC12 /* Scene */ = {
-			isa = PBXGroup;
-			children = (
-				A536D36717C228D8007FBC12 /* GameScene.lua */,
-				A536D36817C228D8007FBC12 /* MainMenuScene.lua */,
-				A536D36917C228D8007FBC12 /* SplashScene.lua */,
-			);
-			path = Scene;
-			sourceTree = "<group>";
-		};
-		A536D36A17C228D8007FBC12 /* Sprite */ = {
-			isa = PBXGroup;
-			children = (
-				A536D36B17C228D8007FBC12 /* GameIcon.lua */,
-			);
-			path = Sprite;
-			sourceTree = "<group>";
-		};
 		F293B3BD15EB7BE500256477 = {
 			isa = PBXGroup;
 			children = (
@@ -356,7 +299,7 @@
 		F293B3C915EB7BE500256477 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F293B3C815EB7BE500256477 /* MyGitGame.app */,
+				F293B3C815EB7BE500256477 /* LoveClear.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -402,7 +345,9 @@
 		F293BC4615EB859D00256477 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A536D35F17C228D8007FBC12 /* Script */,
+				A57B930917C23D9F00FCC709 /* imgs */,
+				A57B930A17C23D9F00FCC709 /* Script */,
+				A57B930B17C23D9F00FCC709 /* Sound */,
 				1AC3622916D47C5C000847F2 /* fonts */,
 				15C156911683138E00D239F2 /* Default-568h@2x.png */,
 				15C156921683138E00D239F2 /* Default.png */,
@@ -419,9 +364,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F293B3C715EB7BE500256477 /* MyGitGame */ = {
+		F293B3C715EB7BE500256477 /* LoveClear */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F293B6C415EB7BEA00256477 /* Build configuration list for PBXNativeTarget "MyGitGame" */;
+			buildConfigurationList = F293B6C415EB7BEA00256477 /* Build configuration list for PBXNativeTarget "LoveClear" */;
 			buildPhases = (
 				F293B3C415EB7BE500256477 /* Sources */,
 				F293B3C515EB7BE500256477 /* Frameworks */,
@@ -436,9 +381,9 @@
 				1AF4C3EF1786632F00122817 /* PBXTargetDependency */,
 				1AF4C3F11786632F00122817 /* PBXTargetDependency */,
 			);
-			name = MyGitGame;
-			productName = MyGitGame;
-			productReference = F293B3C815EB7BE500256477 /* MyGitGame.app */;
+			name = LoveClear;
+			productName = LoveClear;
+			productReference = F293B3C815EB7BE500256477 /* LoveClear.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -449,7 +394,7 @@
 			attributes = {
 				LastUpgradeCheck = 0430;
 			};
-			buildConfigurationList = F293B3C215EB7BE500256477 /* Build configuration list for PBXProject "MyGitGame" */;
+			buildConfigurationList = F293B3C215EB7BE500256477 /* Build configuration list for PBXProject "LoveClear" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -467,7 +412,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				F293B3C715EB7BE500256477 /* MyGitGame */,
+				F293B3C715EB7BE500256477 /* LoveClear */,
 			);
 		};
 /* End PBXProject section */
@@ -593,14 +538,9 @@
 				1A0227B017A3AA3500B867AD /* DrawPrimitives.lua in Resources */,
 				1A0227B117A3AA3500B867AD /* Opengl.lua in Resources */,
 				1A0227B217A3AA3500B867AD /* OpenglConstants.lua in Resources */,
-				A536D36C17C228D8007FBC12 /* CommonDefine.lua in Resources */,
-				A536D36D17C228D8007FBC12 /* DebugConfig.lua in Resources */,
-				A536D36E17C228D8007FBC12 /* GameBoardLogic.lua in Resources */,
-				A536D36F17C228D8007FBC12 /* main.lua in Resources */,
-				A536D37017C228D8007FBC12 /* GameScene.lua in Resources */,
-				A536D37117C228D8007FBC12 /* MainMenuScene.lua in Resources */,
-				A536D37217C228D8007FBC12 /* SplashScene.lua in Resources */,
-				A536D37317C228D8007FBC12 /* GameIcon.lua in Resources */,
+				A57B930C17C23D9F00FCC709 /* imgs in Resources */,
+				A57B930D17C23D9F00FCC709 /* Script in Resources */,
+				A57B930E17C23D9F00FCC709 /* Sound in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -821,7 +761,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F293B3C215EB7BE500256477 /* Build configuration list for PBXProject "MyGitGame" */ = {
+		F293B3C215EB7BE500256477 /* Build configuration list for PBXProject "LoveClear" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F293B6C215EB7BEA00256477 /* Debug */,
@@ -830,7 +770,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F293B6C415EB7BEA00256477 /* Build configuration list for PBXNativeTarget "MyGitGame" */ = {
+		F293B6C415EB7BEA00256477 /* Build configuration list for PBXNativeTarget "LoveClear" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F293B6C515EB7BEA00256477 /* Debug */,

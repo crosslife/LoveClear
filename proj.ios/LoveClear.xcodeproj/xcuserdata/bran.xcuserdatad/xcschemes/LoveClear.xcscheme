@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F293B3C715EB7BE500256477"
-               BuildableName = "MyGitGame.app"
-               BlueprintName = "MyGitGame"
-               ReferencedContainer = "container:MyGitGame.xcodeproj">
+               BuildableName = "LoveClear.app"
+               BlueprintName = "LoveClear"
+               ReferencedContainer = "container:LoveClear.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F293B3C715EB7BE500256477"
-            BuildableName = "MyGitGame.app"
-            BlueprintName = "MyGitGame"
-            ReferencedContainer = "container:MyGitGame.xcodeproj">
+            BuildableName = "LoveClear.app"
+            BlueprintName = "LoveClear"
+            ReferencedContainer = "container:LoveClear.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F293B3C715EB7BE500256477"
-            BuildableName = "MyGitGame.app"
-            BlueprintName = "MyGitGame"
-            ReferencedContainer = "container:MyGitGame.xcodeproj">
+            BuildableName = "LoveClear.app"
+            BlueprintName = "LoveClear"
+            ReferencedContainer = "container:LoveClear.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F293B3C715EB7BE500256477"
-            BuildableName = "MyGitGame.app"
-            BlueprintName = "MyGitGame"
-            ReferencedContainer = "container:MyGitGame.xcodeproj">
+            BuildableName = "LoveClear.app"
+            BlueprintName = "LoveClear"
+            ReferencedContainer = "container:LoveClear.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
