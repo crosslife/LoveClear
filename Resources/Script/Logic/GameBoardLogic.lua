@@ -126,45 +126,46 @@ function getNearbyCellSet(cell)
 		end
 	end
 
-	if x > 1 and GameBoard[x-1][y] == index then		
-		if (x > 2 and GameBoard[x-2][y] == index) then
-			addCellToSet({x = x-1, y = y})
-			addCellToSet({x = x-2, y = y})
-		elseif x < GBoardSizeX and GameBoard[x+1][y] == index then
-			addCellToSet({x = x-1, y = y})
-			addCellToSet({x = x+1, y = y})
-		end
+	local cond = {}
+	cond[1] = x > 1 and GameBoard[x-1][y] == index
+	cond[2] = x > 2 and GameBoard[x-2][y] == index
+	cond[3] = x < GBoardSizeX and GameBoard[x+1][y] == index
+	cond[4] = x < GBoardSizeX-1 and GameBoard[x+2][y] == index
+	cond[5] = y > 1 and GameBoard[x][y-1] == index
+	cond[6] = y > 2 and GameBoard[x][y-2] == index
+	cond[7] = y < GBoardSizeY and GameBoard[x][y+1] == index
+	cond[8] = y < GBoardSizeY-1 and GameBoard[x][y+2] == index
+
+	if cond[1] and cond[2] then
+		addCellToSet({x = x-1, y = y})
+		addCellToSet({x = x-2, y = y})
 	end
 
-	if x < GBoardSizeX and GameBoard[x+1][y] == index then		
-		if (x < GBoardSizeX-1 and GameBoard[x+2][y] == index) then
-			addCellToSet({x = x+1, y = y})
-			addCellToSet({x = x+2, y = y})
-		elseif x > 1 and GameBoard[x-1][y] == index then
-			addCellToSet({x = x+1, y = y})
-			addCellToSet({x = x-1, y = y})
-		end
+	if cond[1] and cond[3] then
+		addCellToSet({x = x-1, y = y})
+		addCellToSet({x = x+1, y = y})
 	end
 
-	if y > 1 and GameBoard[x][y-1] == index then		
-		if (y > 2 and GameBoard[x][y-2] == index) then
-			addCellToSet({x = x, y = y-1})
-			addCellToSet({x = x, y = y-2})
-		elseif y < GBoardSizeY and GameBoard[x][y+1] == index then
-			addCellToSet({x = x, y = y-1})
-			addCellToSet({x = x, y = y+1})
-		end
+	if cond[3] and cond[4] then
+		addCellToSet({x = x+1, y = y})
+		addCellToSet({x = x+2, y = y})
 	end
 
-	if y < GBoardSizeY and GameBoard[x][y+1] == index then		
-		if (y < GBoardSizeY-1 and GameBoard[x][y+2] == index) then
-			addCellToSet({x = x, y = y+1})
-			addCellToSet({x = x, y = y+2})
-		elseif y > 1 and GameBoard[x][y-1] == index then
-			addCellToSet({x = x, y = y+1})
-			addCellToSet({x = x, y = y-1})		
-		end
+	if cond[5] and cond[6] then
+		addCellToSet({x = x, y = y-1})
+		addCellToSet({x = x, y = y-2})
 	end
+
+	if cond[5] and cond[7] then
+		addCellToSet({x = x, y = y-1})
+		addCellToSet({x = x, y = y+1})
+	end
+
+	if cond[7] and cond[8] then
+		addCellToSet({x = x, y = y+1})
+		addCellToSet({x = x, y = y+2})
+	end
+		
 	return cellSet
 end
 
