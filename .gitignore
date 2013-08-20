@@ -2,8 +2,8 @@ proj.android/obj/
 proj.android/assets/
 proj.android/libs/armeabi/libcocos2dlua.so
 proj.android/bin/
-proj.android/gen/crosslife/MyGitGame/BuildConfig.java
-proj.android/gen/crosslife/MyGitGame/R.java
+proj.android/gen/crosslife/LoveClear/BuildConfig.java
+proj.android/gen/crosslife/LoveClear/R.java
 proj.win32/Debug.win32/
 proj.android/gen/
 proj.win32/LoveClear.sdf
