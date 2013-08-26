@@ -473,6 +473,7 @@ local function createBackLayer()
 
 	backLayer:addChild(backSprite)
 
+
 	return backLayer
 end
 
@@ -565,6 +566,10 @@ function CreateGameScene()
 
 	initGameBoard()
 	initGameBoardIcon()
+
+	local blinkSprite = createBlinkIconSprite()
+	blinkSprite:setPosition(100,100)
+	scene:addChild(blinkSprite)
 
 	scene:addChild(createTouchLayer(), 1000)
 

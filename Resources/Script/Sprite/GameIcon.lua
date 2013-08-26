@@ -34,6 +34,30 @@ end
 --获取某个棋子
 function getGameIconSprite(type, index)
 	local iconFrame = CCSpriteFrameCache:getInstance():getSpriteFrameByName("icon"..type..index..".png")
+	if iconFrame == nil then
+		print("icon"..type..index..".png")
+		print("iconFrame nil")
+		return
+	end
 	local iconSprite = CCSprite:createWithSpriteFrame(iconFrame)
+	return iconSprite
+end
+
+--创建随机变换的棋子
+function createBlinkIconSprite()
+	local animFrames = CCArray:create()
+
+	for i=1, GGameIconCount do
+		local iconFrame = CCSpriteFrameCache:getInstance():getSpriteFrameByName("icon4"..i..".png")
+		animFrames:addObject(iconFrame)
+	end
+
+	local iconSprite = getGameIconSprite(4, 1)
+
+    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.1)
+	local animate = CCAnimate:create(animation);
+
+    iconSprite:runAction(CCRepeatForever:create(animate))
+
 	return iconSprite
 end
