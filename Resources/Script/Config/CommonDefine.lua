@@ -33,6 +33,7 @@ GBoardSizeX = 7
 GBoardSizeY = 7
 
 GGameIconCount = 7
+GBlinkIconIndex = 21
 
 GBackGroundMiddlePoint = {x = 356, y = 512}
 

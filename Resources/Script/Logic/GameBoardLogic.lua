@@ -32,6 +32,15 @@ for i = 1, GBoardSizeX do
 	end
 end
 
+--获得某个节点的数据，越界返回 -1
+local function getGameBoardData(x, y)
+	local ret = -1
+	if x > 0 and x < GBoardSizeX and y > 0 and y < GBoardSizeY then
+		ret = GameBoard[x][y]
+	end
+	return ret
+end
+
 --随机生成初始棋盘，保证不含三连
 function initGameBoard()
 	for	x = 1, GBoardSizeX do
@@ -209,4 +218,55 @@ function getRefreshBoardData()
 	end
 
 	return firstEmptyCell, addCellList, moveCellList
+end
+
+--检测棋盘有无可移动消除棋子
+function checkBoardMovable()
+	local ret = false
+	--检测两个cell内容是否为data
+	local function checkPairIndex(cellA, cellB, data)
+		local ret = false
+		local dataA = getGameBoardData(cellA.x , cellA.y)
+		local dataB = getGameBoardData(cellB.x , cellB.y)
+
+		if dataA ~= -1 and dataB ~= -1 then
+			if dataA == data and dataB == data then
+				ret = true
+			end
+		end
+
+		return ret
+	end
+
+	local function checkCellMoveable(cell)
+		local ret = false
+		local cellData = getGameBoardData(cell.x, cell.y)
+		if cellData ~= -1 then
+			if checkPairIndex({x = cell.x, y = cell.y + 2}, {x = cell.x, y = cell.y + 3}, cellData) or
+			checkPairIndex({x = cell.x + 1, y = cell.y + 1}, {x = cell.x + 1, y = cell.y + 2}, cellData) or
+			checkPairIndex({x = cell.x + 1, y = cell.y + 1}, {x = cell.x + 2, y = cell.y + 1}, cellData) or
+			checkPairIndex({x = cell.x + 2, y = cell.y}, {x = cell.x + 3, y = cell.y}, cellData) or
+			checkPairIndex({x = cell.x + 1, y = cell.y - 1}, {x = cell.x + 2, y = cell.y - 1}, cellData) or
+			checkPairIndex({x = cell.x + 1, y = cell.y - 1}, {x = cell.x + 1, y = cell.y - 2}, cellData) or
+			checkPairIndex({x = cell.x, y = cell.y - 2}, {x = cell.x, y = cell.y - 3}, cellData) or
+			checkPairIndex({x = cell.x - 1, y = cell.y - 1}, {x = cell.x - 1, y = cell.y - 2}, cellData) or
+			checkPairIndex({x = cell.x - 1, y = cell.y - 1}, {x = cell.x - 2, y = cell.y - 1}, cellData) or
+			checkPairIndex({x = cell.x - 2, y = cell.y}, {x = cell.x - 3, y = cell.y}, cellData) or
+			checkPairIndex({x = cell.x - 1, y = cell.y + 1}, {x = cell.x - 2, y = cell.y + 1}, cellData) or
+			checkPairIndex({x = cell.x - 1, y = cell.y + 1}, {x = cell.x - 1, y = cell.y + 2}, cellData) then
+				ret = true
+			end
+		end
+		return ret
+	end
+
+	for i = 1, GBoardSizeX do
+		for j = 1, GBoardSizeY do
+			if checkCellMoveable({x = i, y = j}) then
+				ret = true
+				return ret
+			end
+		end
+	end
+	return ret
 end

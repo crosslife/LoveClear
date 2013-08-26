@@ -402,6 +402,10 @@ end
 --检测落下的棋子是否命中
 function cfCheckFallCell()
 	cclog("cfCheckFallCell...")
+	local boardMovable = checkBoardMovable()
+	if boradMoveable == false then
+		cclog("checkBoardMovable false")
+	end
 
 	--复制为局部变量
 	local checkSet = {}
@@ -566,10 +570,6 @@ function CreateGameScene()
 
 	initGameBoard()
 	initGameBoardIcon()
-
-	local blinkSprite = createBlinkIconSprite()
-	blinkSprite:setPosition(100,100)
-	scene:addChild(blinkSprite)
 
 	scene:addChild(createTouchLayer(), 1000)
 
