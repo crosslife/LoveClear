@@ -399,16 +399,30 @@ local function onCheckSuccess(succCellSet)
 
 end
 
+--创建随机棋子下落到棋盘并改变棋盘数据
+local function addBlinkIconToBoard()
+	local blinkSprite = createBlinkIconSprite()
+	local blinkStartPoint = getCellCenterPoint({x = 6, y = 10})
+	blinkSprite:setPosition(blinkStartPoint.x, blinkStartPoint.y)
+	scene:addChild(blinkSprite)
+end
+
 --检测落下的棋子是否命中
 function cfCheckFallCell()
 	cclog("cfCheckFallCell...")
 	local boardMovable , succList= checkBoardMovable()
+	if #succList <= 5 then
+		addBlinkIconToBoard()
+	end
+	--[[
 	if boardMovable then
 		cclog("checkBoardMovable true")
 		cclog("succList size : "..#succList)
 	else
-		cclog("checkBoardMovable false ")		
+		cclog("checkBoardMovable false ")
+		addBlinkIconToBoard()		
 	end
+	]]
 
 	--复制为局部变量
 	local checkSet = {}
