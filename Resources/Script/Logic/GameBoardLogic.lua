@@ -223,50 +223,46 @@ end
 --检测棋盘有无可移动消除棋子
 function checkBoardMovable()
 	local ret = false
-	--检测两个cell内容是否为data
-	local function checkPairIndex(cellA, cellB, data)
+	
+	--检测交换两个节点数据后，棋盘是否可消除
+	local function checkTwinCell(cellA, cellB)
 		local ret = false
-		local dataA = getGameBoardData(cellA.x , cellA.y)
-		local dataB = getGameBoardData(cellB.x , cellB.y)
 
-		if dataA ~= -1 and dataB ~= -1 then
-			if dataA == data and dataB == data then
-				ret = true
-			end
-		end
+		GameBoard[cellA.x][cellA.y], GameBoard[cellB.x][cellB.y] = GameBoard[cellB.x][cellB.y], GameBoard[cellA.x][cellA.y]
+		ret = checkCell(cellA) or checkCell(cellB)
+		GameBoard[cellA.x][cellA.y], GameBoard[cellB.x][cellB.y] = GameBoard[cellB.x][cellB.y], GameBoard[cellA.x][cellA.y]
 
 		return ret
 	end
 
-	local function checkCellMoveable(cell)
-		local ret = false
-		local cellData = getGameBoardData(cell.x, cell.y)
-		if cellData ~= -1 then
-			if checkPairIndex({x = cell.x, y = cell.y + 2}, {x = cell.x, y = cell.y + 3}, cellData) or
-			checkPairIndex({x = cell.x + 1, y = cell.y + 1}, {x = cell.x + 1, y = cell.y + 2}, cellData) or
-			checkPairIndex({x = cell.x + 1, y = cell.y + 1}, {x = cell.x + 2, y = cell.y + 1}, cellData) or
-			checkPairIndex({x = cell.x + 2, y = cell.y}, {x = cell.x + 3, y = cell.y}, cellData) or
-			checkPairIndex({x = cell.x + 1, y = cell.y - 1}, {x = cell.x + 2, y = cell.y - 1}, cellData) or
-			checkPairIndex({x = cell.x + 1, y = cell.y - 1}, {x = cell.x + 1, y = cell.y - 2}, cellData) or
-			checkPairIndex({x = cell.x, y = cell.y - 2}, {x = cell.x, y = cell.y - 3}, cellData) or
-			checkPairIndex({x = cell.x - 1, y = cell.y - 1}, {x = cell.x - 1, y = cell.y - 2}, cellData) or
-			checkPairIndex({x = cell.x - 1, y = cell.y - 1}, {x = cell.x - 2, y = cell.y - 1}, cellData) or
-			checkPairIndex({x = cell.x - 2, y = cell.y}, {x = cell.x - 3, y = cell.y}, cellData) or
-			checkPairIndex({x = cell.x - 1, y = cell.y + 1}, {x = cell.x - 2, y = cell.y + 1}, cellData) or
-			checkPairIndex({x = cell.x - 1, y = cell.y + 1}, {x = cell.x - 1, y = cell.y + 2}, cellData) then
-				ret = true
-			end
-		end
-		return ret
-	end
-
+	local succList = {}
+	
+	--上下检测
 	for i = 1, GBoardSizeX do
-		for j = 1, GBoardSizeY do
-			if checkCellMoveable({x = i, y = j}) then
-				ret = true
-				return ret
+		for j = 1, GBoardSizeY - 1 do
+			local cellA = {x = i, y = j}
+			local cellB = {x = i, y = j + 1}
+			if checkTwinCell(cellA, cellB) then
+				succList[#succList + 1] = cellA
 			end
 		end
 	end
-	return ret
+
+	--左右检测
+	for i = 1, GBoardSizeX - 1 do
+		for j = 1, GBoardSizeY do
+			local cellA = {x = i, y = j}
+			local cellB = {x = i + 1, y = j}
+			if checkTwinCell(cellA, cellB) then
+				succList[#succList + 1] = cellA
+			end
+		end
+	end
+
+	if #succList > 0 then
+		cclog("check success!!!")
+		ret = true
+	end
+
+	return ret, succList
 end

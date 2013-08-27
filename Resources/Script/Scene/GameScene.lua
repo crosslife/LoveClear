@@ -137,9 +137,9 @@ end
 
 --交换相邻棋子，并执行回调函数(一般为检测是否命中)
 local function switchCell(cellA, cellB, cfCallBack)
-	cclog("switchCell...")
-	cclog("cellA.."..cellA.x.." "..cellA.y)
-	cclog("cellB.."..cellB.x.." "..cellB.y)
+	--cclog("switchCell...")
+	--cclog("cellA.."..cellA.x.." "..cellA.y)
+	--cclog("cellB.."..cellB.x.." "..cellB.y)
 	isTouching = false
 
 	resetSelectGameIcon()
@@ -169,7 +169,7 @@ local function switchCell(cellA, cellB, cfCallBack)
 		arrayOfActions:addObject(moveToB)
 
 		if cfCallBack ~= nil then
-			cclog("move with call back..")
+			--cclog("move with call back..")
 			local callBack = CCCallFunc:create(cfCallBack)
 			arrayOfActions:addObject(callBack)
 		end
@@ -191,7 +191,7 @@ end
 
 --移除格子回调函数
 local function cfRemoveSelf(matchSprite)
-	cclog("cf remove self")
+	--cclog("cf remove self")
 	if matchSprite == nil then
 		cclog("remove failed")
 	else
@@ -234,7 +234,7 @@ end
 --将某个集合的格子渐隐并移除
 local function removeCellSet(cellSet)
 	for i = 1, #cellSet do
-		cclog("remove.."..cellSet[i].x.."  "..cellSet[i].y)
+		--cclog("remove.."..cellSet[i].x.."  "..cellSet[i].y)
 		local tag = 10 * cellSet[i].x + cellSet[i].y
 		local node = scene:getChildByTag(NODE_TAG_START + tag)
 
@@ -248,7 +248,7 @@ end
 
 --匹配消除后刷新游戏面板
 local function cfRefreshBoard()
-	cclog("cfRefreshBoard..")
+	--cclog("cfRefreshBoard..")
 	local firstEmptyCell = nil
 	local addCellList = nil
 	local moveCellList = nil
@@ -259,12 +259,12 @@ local function cfRefreshBoard()
 	--遍历每一列
 	for i = 1, GBoardSizeX do
 		if firstEmptyCell[i] ~= nil then
-			cclog("firstEmptyCell.."..i..".."..firstEmptyCell[i].x..firstEmptyCell[i].y)
+			--cclog("firstEmptyCell.."..i..".."..firstEmptyCell[i].x..firstEmptyCell[i].y)
 			local nextDesCell = {x = firstEmptyCell[i].x, y = firstEmptyCell[i].y}
 			for j = 1, #(moveCellList[i]) do
 				
 				local cell = {x = moveCellList[i][j].x, y = moveCellList[i][j].y}
-				cclog("moveCellList"..i..".."..cell.x..cell.y)
+				--cclog("moveCellList"..i..".."..cell.x..cell.y)
 				local tag = 10 * cell.x + cell.y
 				local node = scene:getChildByTag(NODE_TAG_START + tag)
 
@@ -279,7 +279,7 @@ local function cfRefreshBoard()
 			end
 
 			for j = 1, #(addCellList[i]) do
-				cclog("addCellList"..i..".."..addCellList[i][j])
+				--cclog("addCellList"..i..".."..addCellList[i][j])
 
 				local node = createNodeByIndex(addCellList[i][j])
 				local bornPoint = getCellCenterPoint({x = i, y = 10})
@@ -301,9 +301,9 @@ local function cfRefreshBoard()
 
 	--移动完毕后的回调函数
 	local function cfOnFallDownEnd(node)
-		cclog("fall down end...")
+		--cclog("fall down end...")
 		local tag = node:getTag() - FALLING_TAG
-		cclog("tag.."..tag)
+		--cclog("tag.."..tag)
 		local index = math.modf(tag / 100)
 
 		--提取并去除index信息
@@ -312,7 +312,7 @@ local function cfRefreshBoard()
 		local y = tag % 10
 
 		GameBoard[x][y] = index
-		cclog("nowTag.."..tag)
+		--cclog("nowTag.."..tag)
 		node:setTag(NODE_TAG_START + tag)
 	end
 
@@ -402,9 +402,12 @@ end
 --检测落下的棋子是否命中
 function cfCheckFallCell()
 	cclog("cfCheckFallCell...")
-	local boardMovable = checkBoardMovable()
-	if boradMoveable == false then
-		cclog("checkBoardMovable false")
+	local boardMovable , succList= checkBoardMovable()
+	if boardMovable then
+		cclog("checkBoardMovable true")
+		cclog("succList size : "..#succList)
+	else
+		cclog("checkBoardMovable false ")		
 	end
 
 	--复制为局部变量
@@ -431,7 +434,7 @@ end
 
 --检测互相交换的两个格子是否命中
 function cfCheckSwitchCell()
-	cclog("cfCheckSwitchCell...")
+	--cclog("cfCheckSwitchCell...")
 
 	--复制为局部变量
 	local checkSet = {}
