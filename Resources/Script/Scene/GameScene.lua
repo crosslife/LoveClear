@@ -35,6 +35,7 @@ local SELECT_TAG = 40
 
 local REMOVED_TAG = 20000
 local FALLING_TAG = 30000
+local BLINK_TAG   = 40000
 
 local isTouching = false
 local isMoving = false
@@ -56,6 +57,9 @@ local switchCellPair = {}
 --执行各种函数的辅助node
 local RefreshBoardNode = nil
 local FallEndCheckNode = nil
+
+--闪烁节点
+local blinkCell = nil
 
 local visibleSize = CCDirector:getInstance():getVisibleSize()
 
@@ -124,6 +128,10 @@ end
 
 --点击棋子更换图标效果
 local function onClickGameIcon(cell)
+	if cell.x == 0 or cell.y == 0 then
+		return
+	end
+
 	resetSelectGameIcon()
 
 	curSelectTag = 10 * cell.x + cell.y
@@ -401,17 +409,52 @@ end
 
 --创建随机棋子下落到棋盘并改变棋盘数据
 local function addBlinkIconToBoard()
+
+	--在棋盘上显示该随机棋子
 	local blinkSprite = createBlinkIconSprite()
 	local blinkStartPoint = getCellCenterPoint({x = 6, y = 10})
 	blinkSprite:setPosition(blinkStartPoint.x, blinkStartPoint.y)
+	blinkSprite:setTag(BLINK_TAG + GBlinkIconIndex)
 	scene:addChild(blinkSprite)
+
+	--随机落到棋盘某个点并改变该点数据
+	math.randomseed(math.random(os.time()))
+	local x = math.random(GBoardSizeX)
+	local y = math.random(GBoardSizeY)
+
+	--提前修改棋盘数据防止过程中交换
+	GameBoard[x][y] = GBlinkIconIndex
+	blinkCell = {x = x, y = y}
+
+	local fallEndPoint = getCellCenterPoint({x = x, y = y})
+
+
+	local function cfblinkFallEnd()
+		cclog("blink fall end..")
+		local tag = 10 * blinkCell.x + blinkCell.y
+		local node = scene:getChildByTag(NODE_TAG_START + tag)
+		node:removeFromParentAndCleanup(true)
+		scene:getChildByTag(BLINK_TAG + GBlinkIconIndex):setTag(NODE_TAG_START + tag)
+	end
+
+	local arrayOfActions = CCArray:create()		
+			
+	local move = CCMoveTo:create(0.2, CCPoint(fallEndPoint.x , fallEndPoint.y))
+	local blinkFallEnd = CCCallFunc:create(cfblinkFallEnd)	
+
+	arrayOfActions:addObject(move)
+	arrayOfActions:addObject(blinkFallEnd)
+		
+	local sequence = CCSequence:create(arrayOfActions)
+
+	blinkSprite:runAction(sequence)
 end
 
 --检测落下的棋子是否命中
 function cfCheckFallCell()
 	cclog("cfCheckFallCell...")
 	local boardMovable , succList= checkBoardMovable()
-	if #succList <= 5 then
+	if #succList <= 3 then
 		addBlinkIconToBoard()
 	end
 	--[[

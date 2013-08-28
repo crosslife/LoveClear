@@ -61,12 +61,9 @@ function touchPointToCell(x, y)
 	cell.x = cellX + 1
 	cell.y = cellY + 1
 
-	if cell.x > GBoardSizeX then
-		cell.x = GBoardSizeX
-	end
-
-	if cell.y > GBoardSizeY then
-		cell.y = GBoardSizeY
+	if cell.x > GBoardSizeX or x < GLeftBottomOffsetX or cell.y > GBoardSizeY or y < GLeftBottomOffsetY then
+		cell.x = 0
+		cell.y = 0
 	end
 
 	return cell
