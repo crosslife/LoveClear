@@ -25,5 +25,6 @@ Notice:
 3. 有问题或建议请邮件 hustgeziyang@gmail.com
 4. 我的<a href="http://weibo.com/crosslife">新浪微博</a>
 
-如果这份代码有帮助到你，欢迎请我喝一杯~ 我很乐意为你提供更多帮助~ 
+如果这份代码有帮助到你，欢迎请我喝一杯~ 我很乐意为你提供更多帮助~
+
 <a href='https://me.alipay.com/crosslife'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
